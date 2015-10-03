@@ -8,10 +8,22 @@
 
 /* Begin PBXBuildFile section */
 		93B72ECC1BC07E24001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ECB1BC07E24001F5870 /* main.cpp */; };
+		93B72EF61BC08222001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72EF51BC08222001F5870 /* main.cpp */; };
+		93B72EFB1BC0826E001F5870 /* gtest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93B72EFA1BC0826E001F5870 /* gtest.framework */; };
+		93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		93B72EC61BC07E24001F5870 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		93B72EF11BC08222001F5870 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = /usr/share/man/man1/;
@@ -25,6 +37,11 @@
 /* Begin PBXFileReference section */
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72ECB1BC07E24001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GCPointerTest.cpp; path = ../GCPointer/test/GCPointerTest.cpp; sourceTree = "<group>"; };
+		93B72ED41BC07EC4001F5870 /* GCPointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPointer.h; path = src/GCPointer.h; sourceTree = "<group>"; };
+		93B72EF31BC08222001F5870 /* Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Tests; sourceTree = BUILT_PRODUCTS_DIR; };
+		93B72EF51BC08222001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		93B72EFA1BC0826E001F5870 /* gtest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = gtest.framework; path = GCPointer/frameworks/gtest.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,13 +52,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		93B72EF01BC08222001F5870 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93B72EFB1BC0826E001F5870 /* gtest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		93B72EBF1BC07E24001F5870 = {
 			isa = PBXGroup;
 			children = (
+				93B72EFA1BC0826E001F5870 /* gtest.framework */,
 				93B72ECA1BC07E24001F5870 /* GCPointer */,
+				93B72EF41BC08222001F5870 /* Tests */,
 				93B72EC91BC07E24001F5870 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -50,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				93B72EC81BC07E24001F5870 /* GCPointer */,
+				93B72EF31BC08222001F5870 /* Tests */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -58,8 +86,18 @@
 			isa = PBXGroup;
 			children = (
 				93B72ECB1BC07E24001F5870 /* main.cpp */,
+				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
 			);
 			path = GCPointer;
+			sourceTree = "<group>";
+		};
+		93B72EF41BC08222001F5870 /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */,
+				93B72EF51BC08222001F5870 /* main.cpp */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -82,6 +120,23 @@
 			productReference = 93B72EC81BC07E24001F5870 /* GCPointer */;
 			productType = "com.apple.product-type.tool";
 		};
+		93B72EF21BC08222001F5870 /* Tests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 93B72EF71BC08222001F5870 /* Build configuration list for PBXNativeTarget "Tests" */;
+			buildPhases = (
+				93B72EEF1BC08222001F5870 /* Sources */,
+				93B72EF01BC08222001F5870 /* Frameworks */,
+				93B72EF11BC08222001F5870 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Tests;
+			productName = Tests;
+			productReference = 93B72EF31BC08222001F5870 /* Tests */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -92,6 +147,9 @@
 				ORGANIZATIONNAME = "Dan Borthwick";
 				TargetAttributes = {
 					93B72EC71BC07E24001F5870 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					93B72EF21BC08222001F5870 = {
 						CreatedOnToolsVersion = 6.4;
 					};
 				};
@@ -109,6 +167,7 @@
 			projectRoot = "";
 			targets = (
 				93B72EC71BC07E24001F5870 /* GCPointer */,
+				93B72EF21BC08222001F5870 /* Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -119,6 +178,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72ECC1BC07E24001F5870 /* main.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		93B72EEF1BC08222001F5870 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
+				93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +284,32 @@
 			};
 			name = Release;
 		};
+		93B72EF81BC08222001F5870 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GCPointer/frameworks",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		93B72EF91BC08222001F5870 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/GCPointer/frameworks",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -233,6 +327,14 @@
 			buildConfigurations = (
 				93B72ED01BC07E24001F5870 /* Debug */,
 				93B72ED11BC07E24001F5870 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		93B72EF71BC08222001F5870 /* Build configuration list for PBXNativeTarget "Tests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93B72EF81BC08222001F5870 /* Debug */,
+				93B72EF91BC08222001F5870 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 		};

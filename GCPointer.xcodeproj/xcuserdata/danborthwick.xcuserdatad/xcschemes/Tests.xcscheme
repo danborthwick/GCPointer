@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "93B72EC71BC07E24001F5870"
-               BuildableName = "GCPointer"
-               BlueprintName = "GCPointer"
+               BlueprintIdentifier = "93B72EF21BC08222001F5870"
+               BuildableName = "Tests"
+               BlueprintName = "Tests"
                ReferencedContainer = "container:GCPointer.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -32,9 +32,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93B72EC71BC07E24001F5870"
-            BuildableName = "GCPointer"
-            BlueprintName = "GCPointer"
+            BlueprintIdentifier = "93B72EF21BC08222001F5870"
+            BuildableName = "Tests"
+            BlueprintName = "Tests"
             ReferencedContainer = "container:GCPointer.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -52,9 +52,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93B72EC71BC07E24001F5870"
-            BuildableName = "GCPointer"
-            BlueprintName = "GCPointer"
+            BlueprintIdentifier = "93B72EF21BC08222001F5870"
+            BuildableName = "Tests"
+            BlueprintName = "Tests"
             ReferencedContainer = "container:GCPointer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -71,9 +71,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "93B72EC71BC07E24001F5870"
-            BuildableName = "GCPointer"
-            BlueprintName = "GCPointer"
+            BlueprintIdentifier = "93B72EF21BC08222001F5870"
+            BuildableName = "Tests"
+            BlueprintName = "Tests"
             ReferencedContainer = "container:GCPointer.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

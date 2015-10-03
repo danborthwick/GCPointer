@@ -1,15 +1,7 @@
-//
-//  main.cpp
-//  Tests
-//
-//  Created by Dan Borthwick on 03/10/2015.
-//  Copyright (c) 2015 Dan Borthwick. All rights reserved.
-//
+#include "gtest/gtest.h"
 
-#include <iostream>
-
-int main(int argc, const char * argv[]) {
-	// insert code here...
-	std::cout << "Hello, World!\n";
-    return 0;
+int main(int argc, char * argv[])
+{
+	::testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
 }
