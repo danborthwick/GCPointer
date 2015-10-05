@@ -12,6 +12,7 @@
 		93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */; };
 		93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F2A1BC08A9C001F5870 /* gmock-all.cc */; };
 		93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F3A1BC08D2A001F5870 /* gtest-all.cc */; };
+		93B72F4E1BC310F6001F5870 /* MultimapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -59,6 +60,8 @@
 		93B72F401BC08D2A001F5870 /* gtest-test-part.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-test-part.cc"; path = "libs/gtest/src/gtest-test-part.cc"; sourceTree = "<group>"; };
 		93B72F411BC08D2A001F5870 /* gtest-typed-test.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-typed-test.cc"; path = "libs/gtest/src/gtest-typed-test.cc"; sourceTree = "<group>"; };
 		93B72F421BC08D2A001F5870 /* gtest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest.cc; path = libs/gtest/src/gtest.cc; sourceTree = "<group>"; };
+		93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MultimapTest.cpp; path = GCPointer/test/MultimapTest.cpp; sourceTree = SOURCE_ROOT; };
+		93B72F4F1BC31996001F5870 /* Containers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Containers.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +105,7 @@
 			children = (
 				93B72ECB1BC07E24001F5870 /* main.cpp */,
 				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
+				93B72F4F1BC31996001F5870 /* Containers.h */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";
@@ -113,6 +117,7 @@
 				93B72F371BC08AA3001F5870 /* GMock */,
 				93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */,
 				93B72EF51BC08222001F5870 /* main.cpp */,
+				93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -237,6 +242,7 @@
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
 				93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */,
+				93B72F4E1BC310F6001F5870 /* MultimapTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -337,10 +343,7 @@
 		93B72EF81BC08222001F5870 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/GCPointer/frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -360,10 +363,7 @@
 		93B72EF91BC08222001F5870 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/GCPointer/frameworks",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,

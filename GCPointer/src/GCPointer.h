@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Containers.h"
+
 class Object
 {
 public:
@@ -12,6 +14,11 @@ public:
 	{
 		sInstanceCount--;
 		destructor();
+	}
+	
+	virtual std::string to_string() const
+	{
+		return "Object{}";
 	}
 	
 	// Allow expectations on destructor
@@ -71,7 +78,7 @@ public:
 	
 	~gc_ptr()
 	{
-		gc_pool<T>::sInstance.removeOwned(*this);
+		gc_pool<T>::sInstance.remove(*this);
 		release();
 	}
 	
@@ -120,6 +127,11 @@ public:
 	int refCount() const
 	{
 		return impl ? impl->refCount : 0;
+	}
+	
+	std::string to_string() const
+	{
+		return std::string("gc_ptr{ ") + (impl ? impl->to->to_string() : " null ") + " }";
 	}
 	
 private:
@@ -189,9 +201,11 @@ public:
 		pointers.clear();
 	}
 	
-	void removeOwned(Ptr& p)
+	void remove(Ptr& ptr)
 	{
-		pointers.erase(p.owner);
+		map_remove_if_value(pointers, [&](Ptr* candidate) {
+			return candidate == &ptr;
+		});
 	}
 	
 	void collectGarbage()
@@ -202,6 +216,17 @@ public:
 		mark(unownedPointers);
 		
 		deleteUnmarked();
+	}
+	
+	std::string to_string() const
+	{
+		std::string result = std::string("gc_pool<") + typeid(T).name() + ">";
+		for (auto it = pointers.begin(); it != pointers.end(); ++it)
+		{
+			result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
+		}
+
+		return result;
 	}
 	
 private:
@@ -233,14 +258,9 @@ private:
 	
 	void deleteUnmarked()
 	{
-		for (auto it = pointers.begin(); it != pointers.end(); ++it)
-		{
-			Ptr& ptr = *(*it).second;
-			if (ptr.impl && !ptr.impl->marked)
-			{
-				it = pointers.erase(it);
-			}
-		}
+		map_remove_if_value(pointers, [](Ptr* ptr) {
+			return ptr->impl && !ptr->impl->marked;
+		});
 	}
 	
 	//TODO: Don't nullify, mark/lock

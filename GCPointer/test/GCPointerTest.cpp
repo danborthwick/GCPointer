@@ -81,6 +81,11 @@ public:
 	, value { value }
 	{}
 	
+	string to_string() const override
+	{
+		return "ListNode{" + value + "}";
+	}
+	
 	MOCK_METHOD0(destructor, void());
 };
 
@@ -98,15 +103,24 @@ pair<ListNode::Ptr, ListNode::Ptr> makeReciprocalPair()
 	return { first, second };
 }
 
+TEST_F(GCPointerTest, scopedPointersAreNotGarbageCollected)
+{
+	ListNode::Ptr scoped = make_gc<ListNode>("scoped");
+	collectGarbage<ListNode>();
+	
+	ASSERT_THAT(Object::instanceCount(), Eq(1));
+}
 
 TEST_F(GCPointerTest, hangingReciprocalOwnersAreGarbageCollected)
 {
 	{
 		auto scopedPair = makeReciprocalPair();
 	}
+	cerr << gc_pool<ListNode>::sInstance.to_string() << "\n";
 	ASSERT_THAT(Object::instanceCount(), Eq(2));
 	
 	collectGarbage<ListNode>();
+	cerr << gc_pool<ListNode>::sInstance.to_string() << "\n";
 }
 
 TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
@@ -124,27 +138,3 @@ TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
 	ASSERT_THAT(Object::instanceCount(), Eq(3));
 }
 
-TEST_F(GCPointerTest, multimapErase)
-{
-	multimap<string, int> mm = {
-		{ "a", 1 },
-		{ "a", 2 },
-		{ "a", 3 },
-		{ "b", 2 },
-		{ "c", 1 },
-		{ "c", 2 },
-		{ "c", 3 },
-	};
-	
-	for (auto it = mm.begin(); it != mm.end(); ++it)
-	{
-		if ((*it).second == 3)
-		{
-			mm.erase(it);
-		}
-	}
-	
-	ASSERT_THAT(mm.count("a"), Eq(2));
-	ASSERT_THAT(mm.count("b"), Eq(1));
-	ASSERT_THAT(mm.count("c"), Eq(2));
-}
