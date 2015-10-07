@@ -2,6 +2,8 @@
 
 #include "Containers.h"
 
+void Log(std::string const& s);
+
 class Object
 {
 public:
@@ -258,12 +260,34 @@ private:
 	
 	void deleteUnmarked()
 	{
-		map_remove_if_value(pointers, [](Ptr* ptr) {
-			return ptr->impl && !ptr->impl->marked;
-		});
+		// TODO: Single pass?
+		bool keepGoing = true;
+		while (keepGoing)
+		{
+			keepGoing = false;
+			
+			for (auto it = pointers.begin(); it != pointers.end(); )
+			{
+				Ptr& ptr = *it->second;
+				if (ptr.impl && !ptr.impl->marked)
+				{
+					Object* pointee = ptr.get();
+					nullifyPointersTo(*ptr);
+					
+					Log(std::string("deleting pointee: ") + to_string());
+					delete pointee;
+					
+					//it = pointers.erase(it);
+					Log(std::string("deleted iterator: ") + to_string());
+					keepGoing = true;
+					break;
+				}
+				else
+					++it;
+			}
+		}
 	}
 	
-	//TODO: Don't nullify, mark/lock
 	void nullifyPointersTo(Object& pointee)
 	{
 		for (auto entry : pointers)

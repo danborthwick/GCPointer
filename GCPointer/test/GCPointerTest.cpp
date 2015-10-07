@@ -38,6 +38,13 @@ public:
 
 template<> gc_pool<Parent> gc_pool<Parent>::sInstance {};
 
+const bool cLoggingEnabled = true;
+
+void Log(string const& s)
+{
+	if (cLoggingEnabled)
+		cerr << s << "\n";
+}
 
 TEST_F(GCPointerTest, pointerCanBeCreated)
 {
@@ -81,6 +88,11 @@ public:
 	, value { value }
 	{}
 	
+	virtual ~ListNode()
+	{
+		Log(string("Destroying ") + to_string());
+	}
+	
 	string to_string() const override
 	{
 		return "ListNode{" + value + "}";
@@ -116,25 +128,30 @@ TEST_F(GCPointerTest, hangingReciprocalOwnersAreGarbageCollected)
 	{
 		auto scopedPair = makeReciprocalPair();
 	}
-	cerr << gc_pool<ListNode>::sInstance.to_string() << "\n";
+	Log(gc_pool<ListNode>::sInstance.to_string());
 	ASSERT_THAT(Object::instanceCount(), Eq(2));
 	
 	collectGarbage<ListNode>();
-	cerr << gc_pool<ListNode>::sInstance.to_string() << "\n";
+	Log(gc_pool<ListNode>::sInstance.to_string());
 }
 
 TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
 {
-	ListNode::Ptr root = make_gc<ListNode>("root");
-	
 	{
-		auto scopedPair = makeReciprocalPair();
-		root->next = scopedPair.first;
+		ListNode::Ptr root = make_gc<ListNode>("root");
+		
+		{
+			auto scopedPair = makeReciprocalPair();
+			root->next = scopedPair.first;
+		}
+		ASSERT_THAT(Object::instanceCount(), Eq(3));
+		
+		// Should do nothing as root is still in scope
+		collectGarbage<ListNode>();
+		ASSERT_THAT(Object::instanceCount(), Eq(3));
 	}
-	ASSERT_THAT(Object::instanceCount(), Eq(3));
 	
-	// Should do nothing as root is still in scope
+	// Now three objects should be collected
 	collectGarbage<ListNode>();
-	ASSERT_THAT(Object::instanceCount(), Eq(3));
 }
 
