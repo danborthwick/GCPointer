@@ -1,12 +1,14 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "GCPointer.h"
+#include <random>
 
 using namespace std;
 using namespace testing;
 
 class GCPointerTest : public Test
 {
+public:
 	void SetUp() override
 	{
 		Object::resetInstanceCount();
@@ -16,6 +18,8 @@ class GCPointerTest : public Test
 	{
 		ASSERT_THAT(Object::instanceCount(), Eq(0));
 	}
+	
+	default_random_engine randomGenerator;
 };
 
 class Concrete : public Object
@@ -97,8 +101,6 @@ public:
 	{
 		return "ListNode{" + value + "}";
 	}
-	
-	MOCK_METHOD0(destructor, void());
 };
 
 template<>
@@ -128,11 +130,9 @@ TEST_F(GCPointerTest, hangingReciprocalOwnersAreGarbageCollected)
 	{
 		auto scopedPair = makeReciprocalPair();
 	}
-	Log(gc_pool<ListNode>::sInstance.to_string());
 	ASSERT_THAT(Object::instanceCount(), Eq(2));
 	
 	collectGarbage<ListNode>();
-	Log(gc_pool<ListNode>::sInstance.to_string());
 }
 
 TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
@@ -155,3 +155,95 @@ TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
 	collectGarbage<ListNode>();
 }
 
+TEST_F(GCPointerTest, selfReferencingObjectIsGarbageCollected)
+{
+	{
+		ListNode::Ptr node = make_gc<ListNode>("selfReferencing");
+		node->next = node;
+	}
+	// Out of scope but requires garbage collection due to self-reference
+	ASSERT_THAT(Object::instanceCount(), Eq(1));
+	
+	collectGarbage<ListNode>();
+}
+
+TEST_F(GCPointerTest, fourObjectChainIsGarbageCollected)
+{
+	{
+		ListNode::Ptr nodes[4] =  {
+			make_gc<ListNode>("a"),
+			make_gc<ListNode>("b"),
+			make_gc<ListNode>("c"),
+			make_gc<ListNode>("d")
+		};
+
+		for (int i=0; i < 4; i++)
+			nodes[i]->next = nodes[i % 4];
+	}
+	collectGarbage<ListNode>();
+}
+
+class BinaryTreeNode : public Object
+{
+public:
+	using Ptr = gc_ptr<BinaryTreeNode>;
+	
+	BinaryTreeNode(string value)
+	: value { value }
+	, left { make_owned_null_gc<BinaryTreeNode>(this) }
+	, right { make_owned_null_gc<BinaryTreeNode>(this) }
+	{}
+	
+	string value;
+	Ptr left;
+	Ptr right;
+	
+	string to_string() const override
+	{
+		return "BinaryTreeNode{" + value + "}";
+	}
+};
+
+template<>
+gc_pool<BinaryTreeNode> gc_pool<BinaryTreeNode>::sInstance {};
+
+TEST_F(GCPointerTest, objectsWithMultipleSelfReferencesAreGarbageCollected)
+{
+	{
+		BinaryTreeNode::Ptr node = make_gc<BinaryTreeNode>("node");
+		node->left = node->right = node;
+	}
+	collectGarbage<BinaryTreeNode>();
+}
+
+TEST_F(GCPointerTest, randomNetworkIsGarbageCollected)
+{
+	const int nodeCount = 100;
+	const float nullPointerProportion = 0.2f;
+
+	{
+		vector<BinaryTreeNode::Ptr> network(nodeCount);
+
+		auto pointerToRandomNode = [&,this] () {
+			static uniform_int_distribution<int> distribution(0, nodeCount * (1.f + nullPointerProportion));
+			
+			int index = distribution(randomGenerator);
+			return (index < nodeCount) ? network[index] : gc_ptr<BinaryTreeNode>();
+		};
+
+		for (int i=0; i < nodeCount; i++)
+			network[i] = make_gc<BinaryTreeNode>(to_string(i));
+		
+		for (auto &ptr : network)
+		{
+			ptr->left = pointerToRandomNode();
+			ptr->right = pointerToRandomNode();
+		}
+		
+		ASSERT_THAT(Object::instanceCount(), Eq(nodeCount));
+	}
+
+	ASSERT_THAT(Object::instanceCount(), AllOf(Gt(0), Lt(nodeCount)));
+
+	collectGarbage<BinaryTreeNode>();
+}

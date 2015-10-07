@@ -121,11 +121,6 @@ public:
 			return impl->to < other.impl->to;
 	}
 	
-	bool isLastOwner() const
-	{
-		return !impl || impl->refCount == 1;
-	}
-	
 	int refCount() const
 	{
 		return impl ? impl->refCount : 0;
@@ -175,6 +170,7 @@ class gc_pool
 {
 public:
 	using Ptr = gc_ptr<T>;
+	friend class gc_ptr<T>;
 	static gc_pool<T> sInstance;
 	
 	template<typename... ARGS>
@@ -187,14 +183,14 @@ public:
 	Ptr makeOwned(const Object* owner, ARGS... args)
 	{
 		Ptr p(owner, new T(std::forward<ARGS>(args)...));
-		pointers.insert({ owner, &p });
+		add(p);
 		return p;
 	}
 	
 	Ptr makeOwnedNull(Object* owner)
 	{
 		Ptr p(owner, nullptr);
-		pointers.insert({ owner, &p });
+		add(p);
 		return p;
 	}
 	
@@ -203,43 +199,44 @@ public:
 		pointers.clear();
 	}
 	
-	void remove(Ptr& ptr)
-	{
-		map_remove_if_value(pointers, [&](Ptr* candidate) {
-			return candidate == &ptr;
-		});
-	}
-	
 	void collectGarbage()
 	{
 		unmarkAll();
-		
-		Range unownedPointers = pointers.equal_range(Ptr::cNoOwner);
-		mark(unownedPointers);
-		
+		mark(unownedPointers());
 		deleteUnmarked();
 	}
 	
 	std::string to_string() const
 	{
-		std::string result = std::string("gc_pool<") + typeid(T).name() + ">";
+		std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(pointers.size());
 		for (auto it = pointers.begin(); it != pointers.end(); ++it)
 		{
 			result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
 		}
+		result += pointers.size() ? "\n}" : "}";
 
 		return result;
 	}
 	
 private:
-	using Entry = std::pair<const Object*, Ptr*>;
-	using Encounters = std::set<const Object*>;
 	using OwnerPointerMap = std::multimap<const Object*, Ptr*>;
 	using MapIt = typename OwnerPointerMap::iterator;
 	using Range = std::pair<MapIt, MapIt>;
 	
 	OwnerPointerMap pointers;
 	
+	void add(Ptr& ptr)
+	{
+		pointers.insert({ ptr.owner, &ptr });
+	}
+	
+	void remove(Ptr& ptr)
+	{
+		map_remove_if_value(pointers, [&](Ptr* candidate) {
+			return candidate == &ptr;
+		});
+	}
+
 	void mark(Range range)
 	{
 		for (MapIt it = range.first; it != range.second; ++it)
@@ -248,7 +245,10 @@ private:
 			if (ptr.impl)
 			{
 				if (ptr.impl->marked)
+				{
+					// Already encountered this part of the graph, terminate recursion
 					break;
+				}
 				else
 					ptr.impl->marked = true;
 			}
@@ -260,9 +260,9 @@ private:
 	
 	void deleteUnmarked()
 	{
-		// TODO: Single pass?
-		bool keepGoing = true;
-		while (keepGoing)
+		// TODO: Remove unmarked in single pass
+		// Iterate until a complete pass finds no marked nodes
+		for (bool keepGoing = true; keepGoing; )
 		{
 			keepGoing = false;
 			
@@ -274,11 +274,10 @@ private:
 					Object* pointee = ptr.get();
 					nullifyPointersTo(*ptr);
 					
-					Log(std::string("deleting pointee: ") + to_string());
+					// Need to prevent this invalidating iterator
 					delete pointee;
 					
-					//it = pointers.erase(it);
-					Log(std::string("deleted iterator: ") + to_string());
+					// Iterator now invalid, need to break
 					keepGoing = true;
 					break;
 				}
@@ -310,6 +309,11 @@ private:
 				p.impl->marked = false;
 			}
 		}
+	}
+	
+	Range unownedPointers()
+	{
+		return pointers.equal_range(Ptr::cNoOwner);
 	}
 };
 
