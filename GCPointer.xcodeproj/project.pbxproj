@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */; };
+		930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */; };
+		930114731BC808AC00ED2D6F /* GCPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GCPointer.cpp */; };
+		930114741BC808C800ED2D6F /* GCPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GCPointer.cpp */; };
 		93B72ECC1BC07E24001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ECB1BC07E24001F5870 /* main.cpp */; };
 		93B72EF61BC08222001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72EF51BC08222001F5870 /* main.cpp */; };
 		93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */; };
@@ -37,6 +41,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SharedPtrTest.cpp; sourceTree = "<group>"; };
+		930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerCastingTest.cpp; sourceTree = "<group>"; };
+		930114721BC808AC00ED2D6F /* GCPointer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GCPointer.cpp; path = src/GCPointer.cpp; sourceTree = "<group>"; };
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72ECB1BC07E24001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GCPointerTest.cpp; path = ../GCPointer/test/GCPointerTest.cpp; sourceTree = "<group>"; };
@@ -106,6 +113,7 @@
 				93B72ECB1BC07E24001F5870 /* main.cpp */,
 				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
 				93B72F4F1BC31996001F5870 /* Containers.h */,
+				930114721BC808AC00ED2D6F /* GCPointer.cpp */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";
@@ -118,6 +126,8 @@
 				93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */,
 				93B72EF51BC08222001F5870 /* main.cpp */,
 				93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */,
+				9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */,
+				930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -231,6 +241,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72ECC1BC07E24001F5870 /* main.cpp in Sources */,
+				930114731BC808AC00ED2D6F /* GCPointer.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,8 +250,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */,
+				930114741BC808C800ED2D6F /* GCPointer.cpp in Sources */,
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
+				9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */,
+				930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */,
 				93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */,
 				93B72F4E1BC310F6001F5870 /* MultimapTest.cpp in Sources */,
 			);

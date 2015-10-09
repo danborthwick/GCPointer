@@ -3,6 +3,7 @@
 #include "GCPointer.h"
 #include <random>
 
+using namespace gc;
 using namespace std;
 using namespace testing;
 
@@ -18,8 +19,6 @@ public:
 	{
 		ASSERT_THAT(Object::instanceCount(), Eq(0));
 	}
-	
-	default_random_engine randomGenerator;
 };
 
 class Concrete : public Object
@@ -44,7 +43,7 @@ template<> gc_pool<Parent> gc_pool<Parent>::sInstance {};
 
 const bool cLoggingEnabled = true;
 
-void Log(string const& s)
+void gc::Log(string const& s)
 {
 	if (cLoggingEnabled)
 		cerr << s << "\n";
@@ -216,30 +215,43 @@ TEST_F(GCPointerTest, objectsWithMultipleSelfReferencesAreGarbageCollected)
 	collectGarbage<BinaryTreeNode>();
 }
 
-TEST_F(GCPointerTest, randomNetworkIsGarbageCollected)
+class Network
 {
-	const int nodeCount = 100;
+public:
 	const float nullPointerProportion = 0.2f;
 
+	vector<BinaryTreeNode::Ptr> nodes;
+	default_random_engine randomGenerator;
+	uniform_int_distribution<int> distribution;
+	
+	Network(int nodeCount)
+	: nodes(nodeCount)
+	, distribution(0, nodeCount * (1.f + nullPointerProportion))
 	{
-		vector<BinaryTreeNode::Ptr> network(nodeCount);
-
-		auto pointerToRandomNode = [&,this] () {
-			static uniform_int_distribution<int> distribution(0, nodeCount * (1.f + nullPointerProportion));
-			
-			int index = distribution(randomGenerator);
-			return (index < nodeCount) ? network[index] : gc_ptr<BinaryTreeNode>();
-		};
-
 		for (int i=0; i < nodeCount; i++)
-			network[i] = make_gc<BinaryTreeNode>(to_string(i));
+			nodes[i] = make_gc<BinaryTreeNode>(to_string(i));
 		
-		for (auto &ptr : network)
+		for (auto &ptr : nodes)
 		{
 			ptr->left = pointerToRandomNode();
 			ptr->right = pointerToRandomNode();
 		}
-		
+	}
+
+	BinaryTreeNode::Ptr pointerToRandomNode()
+	{
+		int index = distribution(randomGenerator);
+		return (index < nodes.size()) ? nodes[index] : gc_ptr<BinaryTreeNode>();
+	};
+
+};
+
+TEST_F(GCPointerTest, randomNetworkIsGarbageCollected)
+{
+	const int nodeCount = 100;
+
+	{
+		Network network(nodeCount);
 		ASSERT_THAT(Object::instanceCount(), Eq(nodeCount));
 	}
 
@@ -247,3 +259,36 @@ TEST_F(GCPointerTest, randomNetworkIsGarbageCollected)
 
 	collectGarbage<BinaryTreeNode>();
 }
+
+class MixedNode : public ListNode
+{
+public:
+	using Ptr = gc_ptr<MixedNode>;
+	string value;
+	BinaryTreeNode::Ptr binaryNode;
+	
+	MixedNode(string value)
+	: ListNode(value)
+	, binaryNode { make_owned_null_gc<BinaryTreeNode>(this) }
+	{}
+
+};
+
+//TEST_F(GCPointerTest, pointersCanBeDowncast)
+//{
+//	ListNode::Ptr base = make_gc<ListNode>(new MixedNode("mixed"));
+//	MixedNode::Ptr derived;
+//	derived = base;
+//	//TODO: Provide downcast constructor or utility function?
+//}
+//
+//TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
+//{
+//	{
+//		ListNode::Ptr node = make_gc<ListNode>(new MixedNode("mixed"));
+//		node->next = node;
+//		
+//		// TODO: Downcasting
+//	}
+//	
+//}

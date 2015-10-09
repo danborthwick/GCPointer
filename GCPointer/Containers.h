@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 template<typename Key, typename Value, class Predicate>
 void map_remove_if_value(std::multimap<Key, Value>& map, Predicate predicate)
 {
