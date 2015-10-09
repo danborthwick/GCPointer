@@ -18,11 +18,19 @@ public:
 	string className() override { return "Derived"; }
 };
 
+template<>
+gc_pool<Base> gc_pool<Base>::sInstance {};
+
+template<>
+gc_pool<Derived> gc_pool<Derived>::sInstance {};
+
+
 TEST(GCPointerCastingTest, CanBeDownCast)
 {
-	gc_ptr<Base> base = make_gc<Base>(new Derived());
+	gc_ptr<Base> base { new Derived() };
 	gc_ptr<Derived> derived = gc::dynamic_pointer_cast<Base, Derived>(base);
 	
+	//TODO: Don't fail due to not sharing impl!
 	ASSERT_THAT(base->className(), Eq("Derived"));
 	ASSERT_THAT(derived->className(), Eq("Derived"));
 }

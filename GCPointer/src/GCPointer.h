@@ -62,11 +62,11 @@ namespace gc
 		, impl(to ? new impl_class({ to, 1 , false }) : nullptr)
 		{}
 		
-		gc_ptr(T* to) : gc_ptr(nullptr, to) {}
-		
 	public:
 		gc_ptr() : gc_ptr(nullptr, nullptr) {}
-		
+
+		gc_ptr(T* to) : gc_ptr(nullptr, to) {}
+
 		gc_ptr(gc_ptr const& other)
 		: owner(other.owner)
 		, impl(nullptr)
@@ -345,13 +345,6 @@ namespace gc
 	{
 		return gc_pool<T>::sInstance.makeUnowned(std::forward<ARGS>(args)...);
 	}
-
-	template <class Base, class InstanceClass>
-	gc_ptr<Base> make_gc(Derived* instance)
-	{
-		Base* pBase = dynamic_cast<Base*>(instance);
-		return gc_pool<Base>::sInstance.makeUnownedFromInstance(pBase);
-	}
 	
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_owned_null_gc(gc_ptr_base::OwnerType* owner)
@@ -375,6 +368,6 @@ namespace gc
 	gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base)
 	{
 		Derived* pBase = dynamic_cast<Derived*>(base.get());
-		return pBase ? make_gc<Derived>(pBase/*TODO , base.impl*/) : make_gc<Derived>(nullptr);
+		return { pBase };
 	}
 }
