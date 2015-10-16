@@ -260,30 +260,22 @@ private:
 	
 	void deleteUnmarked()
 	{
-		// TODO: Remove unmarked in single pass
-		// Iterate until a complete pass finds no marked nodes
-		for (bool keepGoing = true; keepGoing; )
+		for (auto it = pointers.begin(); it != pointers.end(); )
 		{
-			keepGoing = false;
-			
-			for (auto it = pointers.begin(); it != pointers.end(); )
+			Ptr& ptr = *it->second;
+			if (ptr.impl && !ptr.impl->marked)
 			{
-				Ptr& ptr = *it->second;
-				if (ptr.impl && !ptr.impl->marked)
-				{
-					Object* pointee = ptr.get();
-					nullifyPointersTo(*ptr);
-					
-					// Need to prevent this invalidating iterator
-					delete pointee;
-					
-					// Iterator now invalid, need to break
-					keepGoing = true;
-					break;
-				}
-				else
-					++it;
+				Object* pointee = ptr.get();
+				nullifyPointersTo(*ptr);
+				
+				// TODO: Need to prevent this invalidating iterator
+				delete pointee;
+				
+				// Iterator now invalid, start again
+				it = pointers.begin();
 			}
+			else
+				++it;
 		}
 	}
 	
