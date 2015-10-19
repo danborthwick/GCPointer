@@ -1,24 +1,13 @@
-#include <gtest/gtest.h>
-#include <gmock/gmock.h>
 #include "GCPointer.h"
+#include "HangingObjectAssertingTest.h"
 #include <random>
 
 using namespace gc;
 using namespace std;
 using namespace testing;
 
-class GCPointerTest : public Test
+class GCPointerTest : public HangingObjectAssertingTest
 {
-public:
-	void SetUp() override
-	{
-		Object::resetInstanceCount();
-	}
-	
-	void TearDown() override
-	{
-		ASSERT_THAT(Object::instanceCount(), Eq(0));
-	}
 };
 
 class Concrete : public Object

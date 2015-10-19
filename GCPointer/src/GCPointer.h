@@ -1,41 +1,14 @@
 #pragma once
 
 #include "Containers.h"
+#include "GCObject.h"
 #include <string>
+
 namespace gc
 {
 	using uint = unsigned int;
 	
 	void Log(std::string const& s);
-
-	class Object
-	{
-	public:
-		Object()
-		{
-			sInstanceCount++;
-		}
-		
-		virtual ~Object()
-		{
-			sInstanceCount--;
-			destructor();
-		}
-		
-		virtual std::string to_string() const
-		{
-			return "Object{}";
-		}
-		
-		// Allow expectations on destructor
-		virtual void destructor() {}
-		
-		static int instanceCount() { return sInstanceCount; }
-		static void resetInstanceCount() { sInstanceCount = 0; }
-		
-	private:
-		static int sInstanceCount;
-	};
 
 	class gc_ptr_base
 	{
@@ -55,6 +28,10 @@ namespace gc
 	public:
 		friend class gc_pool<T>;
 		
+		//TODO: Base = T
+		template <class Base, class Derived>
+		friend gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base);
+
 	private:
 		// Constructors
 		gc_ptr(const OwnerType* owner, T* to)
@@ -67,6 +44,7 @@ namespace gc
 
 		gc_ptr(T* to) : gc_ptr(nullptr, to) {}
 
+		// Copy constructor
 		gc_ptr(gc_ptr const& other)
 		: owner(other.owner)
 		, impl(nullptr)
@@ -74,6 +52,7 @@ namespace gc
 			retain(other.impl);
 		}
 		
+		// Move constructor
 		gc_ptr(gc_ptr&& other)
 		: owner(other.owner)
 		, impl(std::move(other.impl))
@@ -123,18 +102,6 @@ namespace gc
 			else
 				return impl->to < other.impl->to;
 		}
-		
-	//	// Downcast
-	//	template<typename Base>
-	//	gc_ptr<T>& operator=(gc_ptr<Base> const& other)
-	//	{
-	//		if (other.impl != impl)
-	//		{
-	//			release();
-	//			retain(other.impl);
-	//		}
-	//		return *this;
-	//	}
 		
 		int refCount() const
 		{
@@ -359,7 +326,14 @@ namespace gc
 	template <class Base, class Derived>
 	gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base)
 	{
-		Derived* pBase = dynamic_cast<Derived*>(base.get());
-		return { pBase };
+		using DerivedImplClass = typename gc_ptr<Derived>::impl_class;
+		gc_ptr<Derived> derived;
+		
+		if (dynamic_cast<Derived*>(base.get()))
+		{
+			derived.owner = base.owner;
+			derived.impl = (DerivedImplClass*)((void*)base.impl);
+		}
+		return derived;
 	}
 }

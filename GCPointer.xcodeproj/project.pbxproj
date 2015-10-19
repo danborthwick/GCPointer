@@ -69,6 +69,9 @@
 		93B72F421BC08D2A001F5870 /* gtest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest.cc; path = libs/gtest/src/gtest.cc; sourceTree = "<group>"; };
 		93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MultimapTest.cpp; path = GCPointer/test/MultimapTest.cpp; sourceTree = SOURCE_ROOT; };
 		93B72F4F1BC31996001F5870 /* Containers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Containers.h; sourceTree = "<group>"; };
+		93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HangingObjectAssertingTest.h; sourceTree = "<group>"; };
+		93BE65991BD5434C00A6CB09 /* GCObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCObject.h; path = GCPointer/src/GCObject.h; sourceTree = SOURCE_ROOT; };
+		93BE659A1BD5564900A6CB09 /* Inheritance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Inheritance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				93B72ECB1BC07E24001F5870 /* main.cpp */,
+				93BE65991BD5434C00A6CB09 /* GCObject.h */,
 				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
 				93B72F4F1BC31996001F5870 /* Containers.h */,
 				930114721BC808AC00ED2D6F /* GCPointer.cpp */,
@@ -128,6 +132,8 @@
 				93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */,
 				9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */,
 				930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */,
+				93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */,
+				93BE659A1BD5564900A6CB09 /* Inheritance.h */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -369,6 +375,7 @@
 					"$(PROJECT_DIR)/Tests/libs/gmock",
 					"$(PROJECT_DIR)/Tests/libs/gtest/include",
 					"$(PROJECT_DIR)/Tests/libs/gtest",
+					"$(PROJECT_DIR)/Tests",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -385,6 +392,7 @@
 					"$(PROJECT_DIR)/Tests/libs/gmock",
 					"$(PROJECT_DIR)/Tests/libs/gtest/include",
 					"$(PROJECT_DIR)/Tests/libs/gtest",
+					"$(PROJECT_DIR)/Tests",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
