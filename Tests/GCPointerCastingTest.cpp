@@ -1,4 +1,4 @@
-#include "GCPointer.h"
+#include "GarbageCollection.h"
 #include "HangingObjectAssertingTest.h"
 #include "Inheritance.h"
 
@@ -19,6 +19,13 @@ gc_pool<NotDerivedFromBase> gc_pool<NotDerivedFromBase>::sInstance {};
 class GCPointerCastingTest : public HangingObjectAssertingTest
 {
 };
+
+TEST_F(GCPointerCastingTest, BasePointerCanBeMade)
+{
+	gc_ptr<Base> p = make_gc<Derived>();
+	ASSERT_THAT(p->className(), Eq("Derived"));
+}
+
 
 TEST_F(GCPointerCastingTest, DownCastPointerToBase)
 {
@@ -46,10 +53,8 @@ TEST_F(GCPointerCastingTest, UpCastPointerToDerived)
 	ASSERT_THAT(derived->className(), Eq("Derived"));
 }
 
-TEST_F(GCPointerCastingTest, UpCastPointerToNonBaseGivesNull)
+TEST_F(GCPointerCastingTest, UpCastPointerToNonBaseGivesCompileError)
 {
 	gc_ptr<NotDerivedFromBase> notDerived = make_gc<NotDerivedFromBase>();
-//	gc_ptr<Base> base = gc::dynamic_pointer_cast<NotDerivedFromBase, Base>(notDerived);
-
-//	ASSERT_THAT(base.get(), IsNull());
+// Compile error	gc_ptr<Base> base = gc::dynamic_pointer_cast<NotDerivedFromBase, Base>(notDerived);
 }

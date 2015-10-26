@@ -1,4 +1,4 @@
-#include "GCPointer.h"
+#include "GarbageCollection.h"
 #include "HangingObjectAssertingTest.h"
 #include <random>
 
@@ -263,21 +263,13 @@ public:
 
 };
 
-//TEST_F(GCPointerTest, pointersCanBeDowncast)
-//{
-//	ListNode::Ptr base = make_gc<ListNode>(new MixedNode("mixed"));
-//	MixedNode::Ptr derived;
-//	derived = base;
-//	//TODO: Provide downcast constructor or utility function?
-//}
-//
-//TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
-//{
-//	{
-//		ListNode::Ptr node = make_gc<ListNode>(new MixedNode("mixed"));
+TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
+{
+	{
+//		ListNode::Ptr node = make_gc<MixedNode>("mixed");
 //		node->next = node;
-//		
-//		// TODO: Downcasting
-//	}
-//	
-//}
+		
+		// TODO: Downcasting
+	}
+	
+}
