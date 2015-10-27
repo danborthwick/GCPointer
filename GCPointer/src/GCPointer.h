@@ -28,7 +28,10 @@ namespace gc
 			// TODO: Needs destructor?
 		} *impl;
 		
-		gc_ptr_base(const OwnerType* owner, impl_class* impl) : impl(impl) {}
+		gc_ptr_base(const OwnerType* owner, impl_class* impl)
+		: owner(owner)
+		, impl(impl)
+		{}
 	};
 
 	// Forward declarations for friendship
