@@ -13,7 +13,7 @@ namespace gc
 	class gc_ptr_base
 	{
 	public:
-		using OwnerType = Object;
+		using OwnerType = void;
 
 	// TODO: Private
 	public:

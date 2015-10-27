@@ -77,8 +77,9 @@ namespace gc
 				gc_ptr_base& ptr = *it->second;
 				if (ptr.impl && !ptr.impl->marked)
 				{
+					// TODO: Can't assume Object*
 					Object* pointee = (Object*)ptr.get_void();
-					nullifyPointersTo(*pointee);
+					nullifyPointersTo(pointee);
 					
 					// TODO: Need to prevent this invalidating iterator
 					delete pointee;
@@ -91,12 +92,12 @@ namespace gc
 			}
 		}
 		
-		void nullifyPointersTo(OwnerType& pointee)
+		void nullifyPointersTo(OwnerType* pointee)
 		{
 			for (auto entry : pointers)
 			{
 				gc_ptr_base& p = *entry.second;
-				if (p.impl && (p.impl->to == &pointee))
+				if (p.impl && (p.impl->to == pointee))
 				{
 					p.impl = nullptr;
 				}
@@ -119,7 +120,6 @@ namespace gc
 		{
 			return pointers.equal_range(gc_ptr_base::cNoOwner);
 		}
-
 	};
 	
 	template<typename T>

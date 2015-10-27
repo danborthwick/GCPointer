@@ -344,3 +344,27 @@ TEST_F(GCPointerTest, vectorAccumulate)
 	
 	ASSERT_THAT(*joined, Eq("Once upon a time"));
 }
+
+TEST_F(GCPointerTest, OwnersNeedNotBeGCObjects)
+{
+	class NotAnObject {
+	public:
+		StringPtr value;
+		gc_ptr<NotAnObject> selfReference;
+		
+		NotAnObject(string const& value)
+		: value { make_owned_gc<string>(this, value) }
+		, selfReference { make_owned_null_gc<NotAnObject>(this) }
+		{}
+		
+		virtual ~NotAnObject() {}
+	};
+	
+	{
+		gc_ptr<NotAnObject> p = make_gc<NotAnObject>("Pseudoantidisestablishmentarianism");
+		p->selfReference = p;
+	}
+	collectGarbage();
+}
+
+// TODO: Self referencing
