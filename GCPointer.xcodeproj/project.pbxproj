@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */; };
 		930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */; };
-		930114731BC808AC00ED2D6F /* GCPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GCPointer.cpp */; };
-		930114741BC808C800ED2D6F /* GCPointer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GCPointer.cpp */; };
+		930114731BC808AC00ED2D6F /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
+		93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
 		93B72ECC1BC07E24001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ECB1BC07E24001F5870 /* main.cpp */; };
 		93B72EF61BC08222001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72EF51BC08222001F5870 /* main.cpp */; };
 		93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */; };
@@ -43,7 +43,7 @@
 /* Begin PBXFileReference section */
 		9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SharedPtrTest.cpp; sourceTree = "<group>"; };
 		930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerCastingTest.cpp; sourceTree = "<group>"; };
-		930114721BC808AC00ED2D6F /* GCPointer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GCPointer.cpp; path = src/GCPointer.cpp; sourceTree = "<group>"; };
+		930114721BC808AC00ED2D6F /* GarbageCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GarbageCollection.cpp; path = src/GarbageCollection.cpp; sourceTree = "<group>"; };
 		93068DFA1BDE7F4700CAD319 /* GCPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPool.h; path = src/GCPool.h; sourceTree = "<group>"; };
 		93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GarbageCollection.h; path = src/GarbageCollection.h; sourceTree = "<group>"; };
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -119,9 +119,9 @@
 				93BE65991BD5434C00A6CB09 /* GCObject.h */,
 				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
 				93B72F4F1BC31996001F5870 /* Containers.h */,
-				930114721BC808AC00ED2D6F /* GCPointer.cpp */,
 				93068DFA1BDE7F4700CAD319 /* GCPool.h */,
 				93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */,
+				930114721BC808AC00ED2D6F /* GarbageCollection.cpp */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";
@@ -216,7 +216,7 @@
 		93B72EC01BC07E24001F5870 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Dan Borthwick";
 				TargetAttributes = {
 					93B72EC71BC07E24001F5870 = {
@@ -251,7 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72ECC1BC07E24001F5870 /* main.cpp in Sources */,
-				930114731BC808AC00ED2D6F /* GCPointer.cpp in Sources */,
+				930114731BC808AC00ED2D6F /* GarbageCollection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,7 +260,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */,
-				930114741BC808C800ED2D6F /* GCPointer.cpp in Sources */,
+				93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */,
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
 				9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */,
@@ -293,6 +293,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;

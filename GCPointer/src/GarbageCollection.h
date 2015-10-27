@@ -6,6 +6,8 @@
 
 namespace gc
 {
+	void collectGarbage();
+
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_gc(ARGS&&... args)
 	{
@@ -24,13 +26,7 @@ namespace gc
 		return gc_pool<T>::instance().makeOwned(owner, std::forward<ARGS>(args)...);
 	}
 	
-	template <typename T>
-	void collectGarbage()
-	{
-		gc_pool<T>::instance().collectGarbage();
-	}
-	
-	template <class Base, class Derived>
+	template <class Derived, class Base>
 	gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base)
 	{
 		using DerivedImplClass = typename gc_ptr<Derived>::impl_class;
@@ -43,16 +39,4 @@ namespace gc
 		}
 		return derived;
 	}
-	
-	template<typename T>
-	std::string to_string(T const* t)
-	{
-		return t ? t->to_string() : "null";
-	}
-	
-//	template<>
-//	std::string to_stringy(void const*)
-//	{
-//		return "void";
-//	}
 }

@@ -12,85 +12,31 @@ namespace gc
 
 		static gc_pool_base sInstance;
 
-	protected:
-		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
-		using MapIt = typename OwnerPointerMap::iterator;
-		using Range = std::pair<MapIt, MapIt>;
-		
-		OwnerPointerMap pointers;
-	};
-	
-	template<typename T>
-	class gc_pool : public gc_pool_base
-	{
-	public:
-		using Ptr = gc_ptr<T>;
-		friend class gc_ptr<T>;
-		
-		static gc_pool<T>& instance()
-		{
-			return *(gc_pool<T>*)&sInstance;
-		}
-		
-		template<typename... ARGS>
-		Ptr makeUnowned(ARGS... args)
-		{
-			return makeOwned(Ptr::cNoOwner, std::forward<ARGS>(args)...);
-		}
-		
-		Ptr makeUnownedFromInstance(T* instance)
-		{
-			Ptr p { Ptr::cNoOwner, instance };
-			add(p);
-			return p;
-		}
-		
-		template<typename... ARGS>
-		Ptr makeOwned(const OwnerType* owner, ARGS... args)
-		{
-			Ptr p(owner, new T(std::forward<ARGS>(args)...));
-			add(p);
-			return p;
-		}
-		
-		Ptr makeOwnedNull(OwnerType* owner)
-		{
-			Ptr p(owner, nullptr);
-			add(p);
-			return p;
-		}
-		
-		void reset()
-		{
-			pointers.clear();
-		}
-		
 		void collectGarbage()
 		{
 			unmarkAll();
 			mark(unownedPointers());
 			deleteUnmarked();
 		}
+
+	protected:
+		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
+		using MapIt = typename OwnerPointerMap::iterator;
+		using Range = std::pair<MapIt, MapIt>;
 		
-		std::string to_string() const
+		OwnerPointerMap pointers;
+		
+		void reset()
 		{
-			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(pointers.size());
-			for (auto it = pointers.begin(); it != pointers.end(); ++it)
-			{
-				result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
-			}
-			result += pointers.size() ? "\n}" : "}";
-			
-			return result;
+			pointers.clear();
 		}
 		
-	private:
-		void add(Ptr& ptr)
+		void add(gc_ptr_base& ptr)
 		{
 			pointers.insert({ ptr.owner, &ptr });
 		}
 		
-		void remove(Ptr& ptr)
+		void remove(gc_ptr_base& ptr)
 		{
 			map_remove_if_value(pointers, [&](gc_ptr_base* candidate) {
 				return candidate == &ptr;
@@ -172,7 +118,61 @@ namespace gc
 		
 		Range unownedPointers()
 		{
-			return pointers.equal_range(Ptr::cNoOwner);
+			return pointers.equal_range(gc_ptr_base::cNoOwner);
+		}
+
+	};
+	
+	template<typename T>
+	class gc_pool : public gc_pool_base
+	{
+	public:
+		using Ptr = gc_ptr<T>;
+		friend class gc_ptr<T>;
+		
+		static gc_pool<T>& instance()
+		{
+			return *(gc_pool<T>*)&sInstance;
+		}
+		
+		template<typename... ARGS>
+		Ptr makeUnowned(ARGS... args)
+		{
+			return makeOwned(Ptr::cNoOwner, std::forward<ARGS>(args)...);
+		}
+		
+		Ptr makeUnownedFromInstance(T* instance)
+		{
+			Ptr p { Ptr::cNoOwner, instance };
+			add(p);
+			return p;
+		}
+		
+		template<typename... ARGS>
+		Ptr makeOwned(const OwnerType* owner, ARGS... args)
+		{
+			Ptr p(owner, new T(std::forward<ARGS>(args)...));
+			add(p);
+			return p;
+		}
+		
+		Ptr makeOwnedNull(OwnerType* owner)
+		{
+			Ptr p(owner, nullptr);
+			add(p);
+			return p;
+		}
+		
+		std::string to_string() const
+		{
+			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(pointers.size());
+			for (auto it = pointers.begin(); it != pointers.end(); ++it)
+			{
+				result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
+			}
+			result += pointers.size() ? "\n}" : "}";
+			
+			return result;
 		}
 	};
 }

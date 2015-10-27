@@ -20,7 +20,7 @@ TEST_F(GCPointerCastingTest, BasePointerCanBeMade)
 TEST_F(GCPointerCastingTest, DownCastPointerToBase)
 {
 	gc_ptr<Base> base { new Derived() };
-	gc_ptr<Derived> derived = gc::dynamic_pointer_cast<Base, Derived>(base);
+	gc_ptr<Derived> derived = gc::dynamic_pointer_cast<Derived>(base);
 	
 	ASSERT_THAT(base->className(), Eq("Derived"));
 	ASSERT_THAT(derived->className(), Eq("Derived"));
@@ -29,7 +29,7 @@ TEST_F(GCPointerCastingTest, DownCastPointerToBase)
 TEST_F(GCPointerCastingTest, DownCastPointerToNonBaseGivesNull)
 {
 	gc_ptr<Base> base { new Base() };
-	gc_ptr<NotDerivedFromBase> derived = gc::dynamic_pointer_cast<Base, NotDerivedFromBase>(base);
+	gc_ptr<NotDerivedFromBase> derived = gc::dynamic_pointer_cast<NotDerivedFromBase>(base);
 
 	ASSERT_THAT(derived.get(), IsNull());
 }
@@ -37,7 +37,7 @@ TEST_F(GCPointerCastingTest, DownCastPointerToNonBaseGivesNull)
 TEST_F(GCPointerCastingTest, UpCastPointerToDerived)
 {
 	gc_ptr<Derived> derived = make_gc<Derived>();
-	gc_ptr<Base> base = gc::dynamic_pointer_cast<Derived, Base>(derived);
+	gc_ptr<Base> base = gc::dynamic_pointer_cast<Base>(derived);
 
 	ASSERT_THAT(base->className(), Eq("Derived"));
 	ASSERT_THAT(derived->className(), Eq("Derived"));
@@ -46,5 +46,5 @@ TEST_F(GCPointerCastingTest, UpCastPointerToDerived)
 TEST_F(GCPointerCastingTest, UpCastPointerToNonBaseGivesCompileError)
 {
 	gc_ptr<NotDerivedFromBase> notDerived = make_gc<NotDerivedFromBase>();
-// Compile error	gc_ptr<Base> base = gc::dynamic_pointer_cast<NotDerivedFromBase, Base>(notDerived);
+// Compile error	gc_ptr<Base> base = gc::dynamic_pointer_cast<Base>(notDerived);
 }

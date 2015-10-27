@@ -26,7 +26,7 @@ public:
 	gc_ptr<Concrete> b;
 };
 
-const bool cLoggingEnabled = true;
+const bool cLoggingEnabled = false;
 
 void gc::Log(string const& s)
 {
@@ -101,8 +101,8 @@ pair<ListNode::Ptr, ListNode::Ptr> makeReciprocalPair()
 TEST_F(GCPointerTest, scopedPointersAreNotGarbageCollected)
 {
 	ListNode::Ptr scoped = make_gc<ListNode>("scoped");
-	collectGarbage<ListNode>();
-	
+	collectGarbage();
+
 	ASSERT_THAT(Object::instanceCount(), Eq(1));
 }
 
@@ -113,7 +113,7 @@ TEST_F(GCPointerTest, hangingReciprocalOwnersAreGarbageCollected)
 	}
 	ASSERT_THAT(Object::instanceCount(), Eq(2));
 	
-	collectGarbage<ListNode>();
+	collectGarbage();
 }
 
 TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
@@ -128,12 +128,12 @@ TEST_F(GCPointerTest, ownedReciprocalOwnersAreNotGarbageCollected)
 		ASSERT_THAT(Object::instanceCount(), Eq(3));
 		
 		// Should do nothing as root is still in scope
-		collectGarbage<ListNode>();
+		collectGarbage();
 		ASSERT_THAT(Object::instanceCount(), Eq(3));
 	}
 	
 	// Now three objects should be collected
-	collectGarbage<ListNode>();
+	collectGarbage();
 }
 
 TEST_F(GCPointerTest, selfReferencingObjectIsGarbageCollected)
@@ -145,7 +145,7 @@ TEST_F(GCPointerTest, selfReferencingObjectIsGarbageCollected)
 	// Out of scope but requires garbage collection due to self-reference
 	ASSERT_THAT(Object::instanceCount(), Eq(1));
 	
-	collectGarbage<ListNode>();
+	collectGarbage();
 }
 
 TEST_F(GCPointerTest, fourObjectChainIsGarbageCollected)
@@ -161,7 +161,7 @@ TEST_F(GCPointerTest, fourObjectChainIsGarbageCollected)
 		for (int i=0; i < 4; i++)
 			nodes[i]->next = nodes[i % 4];
 	}
-	collectGarbage<ListNode>();
+	collectGarbage();
 }
 
 class BinaryTreeNode : public Object
@@ -191,7 +191,7 @@ TEST_F(GCPointerTest, objectsWithMultipleSelfReferencesAreGarbageCollected)
 		BinaryTreeNode::Ptr node = make_gc<BinaryTreeNode>("node");
 		node->left = node->right = node;
 	}
-	collectGarbage<BinaryTreeNode>();
+	collectGarbage();
 }
 
 class Network
@@ -236,7 +236,7 @@ TEST_F(GCPointerTest, randomNetworkIsGarbageCollected)
 
 	ASSERT_THAT(Object::instanceCount(), AllOf(Gt(0), Lt(nodeCount)));
 
-	collectGarbage<BinaryTreeNode>();
+	collectGarbage();
 }
 
 class MixedNode : public ListNode
@@ -256,10 +256,10 @@ public:
 TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
 {
 	{
-//		ListNode::Ptr node = make_gc<MixedNode>("mixed");
-//		node->next = node;
-//		
-//		 TODO: Downcasting
+		ListNode::Ptr node = make_gc<MixedNode>("mixed");
+		node->next = node;
 	}
+	ASSERT_THAT(Object::instanceCount(), Eq(1));
 	
+	collectGarbage();
 }
