@@ -17,8 +17,6 @@ public:
 	int x;
 };
 
-template<> gc_pool<Concrete> gc_pool<Concrete>::sInstance {};
-
 class Parent : public Object
 {
 public:
@@ -27,8 +25,6 @@ public:
 	gc_ptr<Concrete> a;
 	gc_ptr<Concrete> b;
 };
-
-template<> gc_pool<Parent> gc_pool<Parent>::sInstance {};
 
 const bool cLoggingEnabled = true;
 
@@ -90,9 +86,6 @@ public:
 		return "ListNode{" + value + "}";
 	}
 };
-
-template<>
-gc_pool<ListNode> gc_pool<ListNode>::sInstance {};
 
 pair<ListNode::Ptr, ListNode::Ptr> makeReciprocalPair()
 {
@@ -191,9 +184,6 @@ public:
 		return "BinaryTreeNode{" + value + "}";
 	}
 };
-
-template<>
-gc_pool<BinaryTreeNode> gc_pool<BinaryTreeNode>::sInstance {};
 
 TEST_F(GCPointerTest, objectsWithMultipleSelfReferencesAreGarbageCollected)
 {

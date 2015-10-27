@@ -9,25 +9,25 @@ namespace gc
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_gc(ARGS&&... args)
 	{
-		return gc_pool<T>::sInstance.makeUnowned(std::forward<ARGS>(args)...);
+		return gc_pool<T>::instance().makeUnowned(std::forward<ARGS>(args)...);
 	}
 	
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_owned_null_gc(gc_ptr_base::OwnerType* owner)
 	{
-		return gc_pool<T>::sInstance.makeOwnedNull(owner);
+		return gc_pool<T>::instance().makeOwnedNull(owner);
 	}
 	
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_owned_gc(gc_ptr_base::OwnerType* owner, ARGS&&... args)
 	{
-		return gc_pool<T>::sInstance.makeOwned(owner, std::forward<ARGS>(args)...);
+		return gc_pool<T>::instance().makeOwned(owner, std::forward<ARGS>(args)...);
 	}
 	
 	template <typename T>
 	void collectGarbage()
 	{
-		gc_pool<T>::sInstance.collectGarbage();
+		gc_pool<T>::instance().collectGarbage();
 	}
 	
 	template <class Base, class Derived>

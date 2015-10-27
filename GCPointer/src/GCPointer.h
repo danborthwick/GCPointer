@@ -84,7 +84,7 @@ namespace gc
 		
 		~gc_ptr()
 		{
-			gc_pool<T>::sInstance.remove(*this);
+			gc_pool<T>::instance().remove(*this);
 			release();
 		}
 		

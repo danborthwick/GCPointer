@@ -6,16 +6,6 @@ using namespace gc;
 using namespace std;
 using namespace testing;
 
-template<>
-gc_pool<Base> gc_pool<Base>::sInstance {};
-
-template<>
-gc_pool<Derived> gc_pool<Derived>::sInstance {};
-
-template<>
-gc_pool<NotDerivedFromBase> gc_pool<NotDerivedFromBase>::sInstance {};
-
-
 class GCPointerCastingTest : public HangingObjectAssertingTest
 {
 };

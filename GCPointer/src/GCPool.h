@@ -10,6 +10,8 @@ namespace gc
 		using OwnerType = gc_ptr_base::OwnerType;
 		friend class gc_ptr_base;
 
+		static gc_pool_base sInstance;
+
 	protected:
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
 		using MapIt = typename OwnerPointerMap::iterator;
@@ -25,7 +27,10 @@ namespace gc
 		using Ptr = gc_ptr<T>;
 		friend class gc_ptr<T>;
 		
-		static gc_pool<T> sInstance;
+		static gc_pool<T>& instance()
+		{
+			return *(gc_pool<T>*)&sInstance;
+		}
 		
 		template<typename... ARGS>
 		Ptr makeUnowned(ARGS... args)
