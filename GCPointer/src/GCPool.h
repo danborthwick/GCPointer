@@ -7,9 +7,6 @@ namespace gc
 	class gc_pool_base
 	{
 	public:
-		using OwnerType = gc_ptr_base::OwnerType;
-		friend class gc_ptr_base;
-
 		static gc_pool_base sInstance;
 
 		void collectGarbage()
@@ -20,6 +17,10 @@ namespace gc
 		}
 
 	protected:
+		using OwnerType = gc_ptr_base::OwnerType;
+		friend class gc_ptr_base;
+		friend size_t live_object_count();
+
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;

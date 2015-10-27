@@ -39,4 +39,6 @@ namespace gc
 		}
 		return derived;
 	}
+	
+	size_t live_object_count();
 }

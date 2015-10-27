@@ -10,6 +10,8 @@ class GCPointerTest : public HangingObjectAssertingTest
 {
 };
 
+using StringPtr = gc_ptr<string>;
+
 class Concrete : public Object
 {
 public:
@@ -262,4 +264,84 @@ TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
 	ASSERT_THAT(Object::instanceCount(), Eq(1));
 	
 	collectGarbage();
+}
+
+TEST_F(GCPointerTest, pointersToBasicTypes)
+{
+	{
+		gc_ptr<int> pInt = make_gc<int>(5);
+		gc_ptr<string> pString = make_gc<string>("Hello World!");
+		gc_ptr<vector<string>> pStringVector = make_gc<vector<string>>();
+		
+		ASSERT_THAT(live_object_count(), Eq(3));
+	}
+	
+	collectGarbage();
+}
+
+TEST_F(GCPointerTest, stringPointerConcatentation)
+{
+	StringPtr a = make_gc<string>("Hello ");
+	StringPtr b = make_gc<string>("world!");
+	*a += *b;
+	
+	ASSERT_THAT(*a, Eq("Hello world!"));
+}
+
+
+class IntPointerHolder : public Object
+{
+public:
+	gc_ptr<int> value;
+	IntPointerHolder(int aValue)
+	: value { make_owned_gc<int>(this, aValue) }
+	{}
+};
+
+TEST_F(GCPointerTest, pointersToBasicTypesCanBeHeld)
+{
+	{
+		gc_ptr<IntPointerHolder> p = make_gc<IntPointerHolder>(42);
+		
+		ASSERT_THAT(*p->value, Eq(42));
+	}
+	
+	collectGarbage();
+}
+
+TEST_F(GCPointerTest, vectorInitialisation)
+{
+	using StringVector = vector<StringPtr>;
+	
+	StringVector v = { make_gc<string>("alpha"), make_gc<string>("beta") };
+	
+	ASSERT_THAT(*v[1], Eq("beta"));
+	
+	gc_ptr<StringVector> pv = make_gc<StringVector>(std::initializer_list<StringPtr> {
+		make_gc<string>("alpha"), make_gc<string>("beta") });
+	
+	ASSERT_THAT(*(*pv)[1], Eq("beta"));
+}
+
+TEST_F(GCPointerTest, vectorAccumulate)
+{
+	{
+		gc_ptr<vector<StringPtr>> v = make_gc<vector<StringPtr>>();
+		v->push_back(make_gc<string>("Once"));
+		v->push_back(make_gc<string>("upon"));
+		v->push_back(make_gc<string>("a"));
+		v->push_back(make_gc<string>("time"));
+		
+		auto append = [] (StringPtr& accumulator, StringPtr& next) {
+			if (!accumulator->empty())
+				*accumulator += " ";
+			
+			*accumulator += *next;
+			return accumulator;
+		};
+		
+		gc_ptr<string> joined = accumulate(v->begin(), v->end(), make_gc<string>(), append);
+		
+		ASSERT_THAT(*joined, Eq("Once upon a time"));
+	}
 }

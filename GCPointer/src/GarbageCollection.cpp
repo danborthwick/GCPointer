@@ -12,3 +12,8 @@ void gc::collectGarbage()
 {
 	gc_pool_base::sInstance.collectGarbage();
 }
+
+size_t gc::live_object_count()
+{
+	return gc_pool_base::sInstance.pointers.size();
+}

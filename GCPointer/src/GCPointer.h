@@ -92,6 +92,7 @@ namespace gc
 		const T* get() const { return (const T*) get_void(); }
 		T* operator->() { return get(); }
 		T& operator*() { return *get(); }
+		const T& operator*() const { return *get(); }
 		
 		gc_ptr<T>& operator=(gc_ptr<T> const& other)
 		{
