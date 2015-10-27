@@ -32,6 +32,8 @@ namespace gc
 		: owner(owner)
 		, impl(impl)
 		{}
+		
+		void* get_void() const { return impl ? impl->to : nullptr; }
 	};
 
 	// Forward declarations for friendship
@@ -86,8 +88,8 @@ namespace gc
 			release();
 		}
 		
-		T* get() { return impl ? (T*)impl->to : nullptr; }
-		const T* get() const { return impl ? (T*)impl->to : nullptr; }
+		T* get() { return (T*) get_void(); }
+		const T* get() const { return (const T*) get_void(); }
 		T* operator->() { return get(); }
 		T& operator*() { return *get(); }
 		

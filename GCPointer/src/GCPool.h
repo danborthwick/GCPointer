@@ -9,6 +9,13 @@ namespace gc
 	public:
 		using OwnerType = gc_ptr_base::OwnerType;
 		friend class gc_ptr_base;
+
+	protected:
+		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
+		using MapIt = typename OwnerPointerMap::iterator;
+		using Range = std::pair<MapIt, MapIt>;
+		
+		OwnerPointerMap pointers;
 	};
 	
 	template<typename T>
@@ -73,12 +80,6 @@ namespace gc
 		}
 		
 	private:
-		using OwnerPointerMap = std::multimap<const OwnerType*, Ptr*>;
-		using MapIt = typename OwnerPointerMap::iterator;
-		using Range = std::pair<MapIt, MapIt>;
-		
-		OwnerPointerMap pointers;
-		
 		void add(Ptr& ptr)
 		{
 			pointers.insert({ ptr.owner, &ptr });
@@ -86,7 +87,7 @@ namespace gc
 		
 		void remove(Ptr& ptr)
 		{
-			map_remove_if_value(pointers, [&](Ptr* candidate) {
+			map_remove_if_value(pointers, [&](gc_ptr_base* candidate) {
 				return candidate == &ptr;
 			});
 		}
@@ -95,7 +96,7 @@ namespace gc
 		{
 			for (MapIt it = range.first; it != range.second; ++it)
 			{
-				Ptr& ptr = *it->second;
+				gc_ptr_base& ptr = *it->second;
 				if (ptr.impl)
 				{
 					if (ptr.impl->marked)
@@ -104,23 +105,30 @@ namespace gc
 						break;
 					}
 					else
+					{
 						ptr.impl->marked = true;
+					}
 				}
 				
-				Range children = pointers.equal_range(ptr.get());
-				mark(children);
+				mark(childrenOf(ptr));
 			}
+		}
+		
+		Range childrenOf(gc_ptr_base& parent)
+		{
+			OwnerType* owner = (OwnerType*) parent.get_void();
+			return pointers.equal_range(owner);
 		}
 		
 		void deleteUnmarked()
 		{
 			for (auto it = pointers.begin(); it != pointers.end(); )
 			{
-				Ptr& ptr = *it->second;
+				gc_ptr_base& ptr = *it->second;
 				if (ptr.impl && !ptr.impl->marked)
 				{
-					Object* pointee = ptr.get();
-					nullifyPointersTo(*ptr);
+					Object* pointee = (Object*)ptr.get_void();
+					nullifyPointersTo(*pointee);
 					
 					// TODO: Need to prevent this invalidating iterator
 					delete pointee;
@@ -137,7 +145,7 @@ namespace gc
 		{
 			for (auto entry : pointers)
 			{
-				Ptr& p = *entry.second;
+				gc_ptr_base& p = *entry.second;
 				if (p.impl && (p.impl->to == &pointee))
 				{
 					p.impl = nullptr;
@@ -149,7 +157,7 @@ namespace gc
 		{
 			for (auto entry : pointers)
 			{
-				Ptr& p = *entry.second;
+				gc_ptr_base& p = *entry.second;
 				if (p.impl)
 				{
 					p.impl->marked = false;

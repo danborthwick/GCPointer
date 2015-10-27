@@ -268,8 +268,8 @@ TEST_F(GCPointerTest, mixedClassesAreGarbageCollected)
 	{
 //		ListNode::Ptr node = make_gc<MixedNode>("mixed");
 //		node->next = node;
-		
-		// TODO: Downcasting
+//		
+//		 TODO: Downcasting
 	}
 	
 }
