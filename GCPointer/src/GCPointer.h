@@ -25,7 +25,6 @@ namespace gc
 			void* to;
 			uint refCount;
 			bool marked;
-			// TODO: Needs destructor?
 		} *impl;
 		
 		gc_ptr_base(const OwnerType* owner, impl_class* impl)

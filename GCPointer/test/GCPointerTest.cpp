@@ -325,23 +325,22 @@ TEST_F(GCPointerTest, vectorInitialisation)
 
 TEST_F(GCPointerTest, vectorAccumulate)
 {
-	{
-		gc_ptr<vector<StringPtr>> v = make_gc<vector<StringPtr>>();
-		v->push_back(make_gc<string>("Once"));
-		v->push_back(make_gc<string>("upon"));
-		v->push_back(make_gc<string>("a"));
-		v->push_back(make_gc<string>("time"));
+	gc_ptr<vector<StringPtr>> v = make_gc<vector<StringPtr>>(initializer_list<StringPtr> {
+		make_gc<string>("Once"),
+		make_gc<string>("upon"),
+		make_gc<string>("a"),
+		make_gc<string>("time")
+	});
+	
+	auto append = [] (StringPtr& accumulator, StringPtr& next) {
+		if (!accumulator->empty())
+			*accumulator += " ";
 		
-		auto append = [] (StringPtr& accumulator, StringPtr& next) {
-			if (!accumulator->empty())
-				*accumulator += " ";
-			
-			*accumulator += *next;
-			return accumulator;
-		};
-		
-		gc_ptr<string> joined = accumulate(v->begin(), v->end(), make_gc<string>(), append);
-		
-		ASSERT_THAT(*joined, Eq("Once upon a time"));
-	}
+		*accumulator += *next;
+		return accumulator;
+	};
+	
+	gc_ptr<string> joined = accumulate(v->begin(), v->end(), make_gc<string>(), append);
+	
+	ASSERT_THAT(*joined, Eq("Once upon a time"));
 }

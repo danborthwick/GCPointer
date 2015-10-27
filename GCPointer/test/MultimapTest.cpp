@@ -38,18 +38,27 @@ TEST(MultimapTest, Erasing)
 	}
 	
 	ASSERT_THAT(mm, Eq(cNoSixes));
-	
 }
 
-TEST(MultimapTest, ErasingWithUtilFunc)
+TEST(MultimapTest, ErasingWithUtilValue)
 {
 	using intStringMap = multimap<int, string>;
 	intStringMap mm = cStart;
 
-	map_remove_if_value(mm, [](string& s) {
+	map_remove_value_if(mm, string("six"));
+	map_remove_value_if(mm, string("six2"));
+	
+	ASSERT_THAT(mm, Eq(cNoSixes));
+}
+
+TEST(MultimapTest, ErasingWithUtilPredicate)
+{
+	using intStringMap = multimap<int, string>;
+	intStringMap mm = cStart;
+	
+	map_remove_value_if(mm, [](string& s) {
 		return s.find("six") != string::npos;
 	});
 	
 	ASSERT_THAT(mm, Eq(cNoSixes));
-	
 }

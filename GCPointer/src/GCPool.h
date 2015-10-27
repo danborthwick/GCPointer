@@ -39,9 +39,7 @@ namespace gc
 		
 		void remove(gc_ptr_base& ptr)
 		{
-			map_remove_if_value(pointers, [&](gc_ptr_base* candidate) {
-				return candidate == &ptr;
-			});
+			map_remove_value_if(pointers, &ptr);
 		}
 		
 		void mark(Range range)

@@ -54,23 +54,22 @@ TEST(SharedPointerTest, vectorInitialisation)
 
 TEST(SharedPointerTest, vectorAccumulate)
 {
-	{
-		shared_ptr<vector<StringPtr>> v = make_shared<vector<StringPtr>>();
-		v->push_back(make_shared<string>("Once"));
-		v->push_back(make_shared<string>("upon"));
-		v->push_back(make_shared<string>("a"));
-		v->push_back(make_shared<string>("time"));
+	shared_ptr<vector<StringPtr>> v = make_shared<vector<StringPtr>>(initializer_list<StringPtr> {
+		make_shared<string>("Once"),
+		make_shared<string>("upon"),
+		make_shared<string>("a"),
+		make_shared<string>("time"),
+	});
+	
+	auto append = [] (StringPtr& accumulator, StringPtr& next) {
+		if (!accumulator->empty())
+			*accumulator += " ";
 		
-		auto append = [] (StringPtr& accumulator, StringPtr& next) {
-			if (!accumulator->empty())
-				*accumulator += " ";
-			
-			*accumulator += *next;
-			return accumulator;
-		};
-		
-		shared_ptr<string> joined = accumulate(v->begin(), v->end(), make_shared<string>(), append);
-		
-		ASSERT_THAT(*joined, Eq("Once upon a time"));
-	}
+		*accumulator += *next;
+		return accumulator;
+	};
+	
+	shared_ptr<string> joined = accumulate(v->begin(), v->end(), make_shared<string>(), append);
+	
+	ASSERT_THAT(*joined, Eq("Once upon a time"));
 }
