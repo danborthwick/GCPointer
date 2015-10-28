@@ -7,12 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */; };
+		930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */; };
+		930114731BC808AC00ED2D6F /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
+		93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
 		93B72ECC1BC07E24001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ECB1BC07E24001F5870 /* main.cpp */; };
 		93B72EF61BC08222001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72EF51BC08222001F5870 /* main.cpp */; };
-		93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */; };
 		93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F2A1BC08A9C001F5870 /* gmock-all.cc */; };
 		93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F3A1BC08D2A001F5870 /* gtest-all.cc */; };
-		93B72F4E1BC310F6001F5870 /* MultimapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */; };
+		93BDBBD21BE0F554002F9CD9 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */; };
+		93BDBBD31BE0F554002F9CD9 /* MultimapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */; };
+		93BDBBD91BE14684002F9CD9 /* PerformanceTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD81BE14683002F9CD9 /* PerformanceTest.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -37,9 +42,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SharedPtrTest.cpp; sourceTree = "<group>"; };
+		930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerCastingTest.cpp; sourceTree = "<group>"; };
+		930114721BC808AC00ED2D6F /* GarbageCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GarbageCollection.cpp; path = src/GarbageCollection.cpp; sourceTree = "<group>"; };
+		93068DFA1BDE7F4700CAD319 /* GCPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPool.h; path = src/GCPool.h; sourceTree = "<group>"; };
+		93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GarbageCollection.h; path = src/GarbageCollection.h; sourceTree = "<group>"; };
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72ECB1BC07E24001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GCPointerTest.cpp; path = ../GCPointer/test/GCPointerTest.cpp; sourceTree = "<group>"; };
 		93B72ED41BC07EC4001F5870 /* GCPointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPointer.h; path = src/GCPointer.h; sourceTree = "<group>"; };
 		93B72EF31BC08222001F5870 /* Tests */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Tests; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72EF51BC08222001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -60,8 +69,15 @@
 		93B72F401BC08D2A001F5870 /* gtest-test-part.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-test-part.cc"; path = "libs/gtest/src/gtest-test-part.cc"; sourceTree = "<group>"; };
 		93B72F411BC08D2A001F5870 /* gtest-typed-test.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-typed-test.cc"; path = "libs/gtest/src/gtest-typed-test.cc"; sourceTree = "<group>"; };
 		93B72F421BC08D2A001F5870 /* gtest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest.cc; path = libs/gtest/src/gtest.cc; sourceTree = "<group>"; };
-		93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MultimapTest.cpp; path = GCPointer/test/MultimapTest.cpp; sourceTree = SOURCE_ROOT; };
-		93B72F4F1BC31996001F5870 /* Containers.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Containers.h; sourceTree = "<group>"; };
+		93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerTest.cpp; sourceTree = "<group>"; };
+		93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultimapTest.cpp; sourceTree = "<group>"; };
+		93BDBBD41BE0F5BF002F9CD9 /* Containers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Containers.h; path = src/Containers.h; sourceTree = "<group>"; };
+		93BDBBD51BE0F5CA002F9CD9 /* TestObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObjects.h; sourceTree = "<group>"; };
+		93BDBBD71BE1434D002F9CD9 /* ObjectNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectNetwork.h; sourceTree = "<group>"; };
+		93BDBBD81BE14683002F9CD9 /* PerformanceTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PerformanceTest.cpp; sourceTree = "<group>"; };
+		93BDBBDA1BE146EA002F9CD9 /* GTestTimeout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GTestTimeout.h; sourceTree = "<group>"; };
+		93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HangingObjectAssertingTest.h; sourceTree = "<group>"; };
+		93BE659A1BD5564900A6CB09 /* Inheritance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Inheritance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,9 +119,12 @@
 		93B72ECA1BC07E24001F5870 /* GCPointer */ = {
 			isa = PBXGroup;
 			children = (
+				93BDBBD41BE0F5BF002F9CD9 /* Containers.h */,
 				93B72ECB1BC07E24001F5870 /* main.cpp */,
 				93B72ED41BC07EC4001F5870 /* GCPointer.h */,
-				93B72F4F1BC31996001F5870 /* Containers.h */,
+				93068DFA1BDE7F4700CAD319 /* GCPool.h */,
+				93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */,
+				930114721BC808AC00ED2D6F /* GarbageCollection.cpp */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";
@@ -113,11 +132,14 @@
 		93B72EF41BC08222001F5870 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
+				93BDBBD61BE0F5DC002F9CD9 /* Helpers */,
 				93B72F4C1BC08D3F001F5870 /* GTest */,
 				93B72F371BC08AA3001F5870 /* GMock */,
-				93B72ED21BC07E8F001F5870 /* GCPointerTest.cpp */,
-				93B72EF51BC08222001F5870 /* main.cpp */,
-				93B72F4D1BC310F6001F5870 /* MultimapTest.cpp */,
+				93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */,
+				93BDBBD81BE14683002F9CD9 /* PerformanceTest.cpp */,
+				93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */,
+				9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */,
+				930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -151,6 +173,19 @@
 				93B72F421BC08D2A001F5870 /* gtest.cc */,
 			);
 			name = GTest;
+			sourceTree = "<group>";
+		};
+		93BDBBD61BE0F5DC002F9CD9 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				93BDBBD51BE0F5CA002F9CD9 /* TestObjects.h */,
+				93B72EF51BC08222001F5870 /* main.cpp */,
+				93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */,
+				93BE659A1BD5564900A6CB09 /* Inheritance.h */,
+				93BDBBD71BE1434D002F9CD9 /* ObjectNetwork.h */,
+				93BDBBDA1BE146EA002F9CD9 /* GTestTimeout.h */,
+			);
+			name = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -196,7 +231,7 @@
 		93B72EC01BC07E24001F5870 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0640;
+				LastUpgradeCheck = 0710;
 				ORGANIZATIONNAME = "Dan Borthwick";
 				TargetAttributes = {
 					93B72EC71BC07E24001F5870 = {
@@ -231,6 +266,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72ECC1BC07E24001F5870 /* main.cpp in Sources */,
+				930114731BC808AC00ED2D6F /* GarbageCollection.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,10 +275,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */,
+				93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */,
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
+				93BDBBD91BE14684002F9CD9 /* PerformanceTest.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
-				93B72EFC1BC082DC001F5870 /* GCPointerTest.cpp in Sources */,
-				93B72F4E1BC310F6001F5870 /* MultimapTest.cpp in Sources */,
+				93BDBBD31BE0F554002F9CD9 /* MultimapTest.cpp in Sources */,
+				9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */,
+				93BDBBD21BE0F554002F9CD9 /* GCPointerTest.cpp in Sources */,
+				930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -269,6 +309,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -355,6 +396,7 @@
 					"$(PROJECT_DIR)/Tests/libs/gmock",
 					"$(PROJECT_DIR)/Tests/libs/gtest/include",
 					"$(PROJECT_DIR)/Tests/libs/gtest",
+					"$(PROJECT_DIR)/Tests",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -371,6 +413,7 @@
 					"$(PROJECT_DIR)/Tests/libs/gmock",
 					"$(PROJECT_DIR)/Tests/libs/gtest/include",
 					"$(PROJECT_DIR)/Tests/libs/gtest",
+					"$(PROJECT_DIR)/Tests",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
