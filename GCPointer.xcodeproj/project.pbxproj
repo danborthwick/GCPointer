@@ -71,7 +71,8 @@
 		93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerTest.cpp; sourceTree = "<group>"; };
 		93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultimapTest.cpp; sourceTree = "<group>"; };
 		93BDBBD41BE0F5BF002F9CD9 /* Containers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Containers.h; path = src/Containers.h; sourceTree = "<group>"; };
-		93BDBBD51BE0F5CA002F9CD9 /* GCObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCObject.h; sourceTree = "<group>"; };
+		93BDBBD51BE0F5CA002F9CD9 /* TestObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObjects.h; sourceTree = "<group>"; };
+		93BDBBD71BE1434D002F9CD9 /* ObjectNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectNetwork.h; sourceTree = "<group>"; };
 		93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HangingObjectAssertingTest.h; sourceTree = "<group>"; };
 		93BE659A1BD5564900A6CB09 /* Inheritance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Inheritance.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -173,10 +174,11 @@
 		93BDBBD61BE0F5DC002F9CD9 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				93BDBBD51BE0F5CA002F9CD9 /* GCObject.h */,
+				93BDBBD51BE0F5CA002F9CD9 /* TestObjects.h */,
 				93B72EF51BC08222001F5870 /* main.cpp */,
 				93BE65981BD5428C00A6CB09 /* HangingObjectAssertingTest.h */,
 				93BE659A1BD5564900A6CB09 /* Inheritance.h */,
+				93BDBBD71BE1434D002F9CD9 /* ObjectNetwork.h */,
 			);
 			name = Helpers;
 			sourceTree = "<group>";

@@ -1,9 +1,9 @@
 #pragma once
 
-#include "GCObject.h"
+#include "TestObjects.h"
 #include <string>
 
-class Base : public gc::Object
+class Base : public InstanceCounted
 {
 public:
 	virtual std::string className() { return "Base"; }

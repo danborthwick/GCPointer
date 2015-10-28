@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "GCObject.h"
+#include "TestObjects.h"
 
 int main(int argc, char * argv[])
 {
@@ -7,4 +7,4 @@ int main(int argc, char * argv[])
 	return RUN_ALL_TESTS();
 }
 
-int gc::Object::sInstanceCount { 0 };
+int InstanceCounted::sInstanceCount { 0 };

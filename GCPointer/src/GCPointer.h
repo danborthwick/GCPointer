@@ -12,13 +12,15 @@ namespace gc
 	template<typename T> class gc_ptr;
 	template <typename T> class gc_pool;
 
+	// Base for all gc_ptr template instantiations.
+	// All public API is declared in gc_ptr
 	class gc_ptr_base
 	{
 	public:
 		using OwnerType = void;
-		using Deleter = std::function<void(void*)>;
-
 		static const OwnerType* cNoOwner;
+	protected:
+		using Deleter = std::function<void(void*)>;
 
 	private:
 		const OwnerType* owner;
