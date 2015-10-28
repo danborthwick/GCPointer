@@ -2,6 +2,7 @@
 
 #include "Containers.h"
 #include <string>
+#include <type_traits>
 
 namespace gc
 {
@@ -99,15 +100,25 @@ namespace gc
 			other.backing = nullptr;
 		}
 		
-		// Copy construct from other (hopefully polymorphic) type
-		// TODO: Make this safe
+		// Copy constructor from assignable type
 		template<typename OtherT>
 		gc_ptr(gc_ptr<OtherT> const& other)
 		: gc_ptr_base(other.owner, nullptr)
 		{
+			static_assert(std::is_base_of<T*, OtherT*>::value, "gc_ptr is not convertible");
 			retain(other.backing);
 		}
 		
+		// Move constructor from assignable type
+		template<typename OtherT>
+		gc_ptr(gc_ptr<OtherT>&& other)
+		: gc_ptr_base(other.owner, std::move(other.backing))
+		{
+			static_assert(std::is_base_of<T, OtherT>::value, "gc_ptr is not convertible");
+			other.backing = nullptr;
+		}
+		
+
 		~gc_ptr()
 		{
 			gc_pool<T>::instance().remove(*this);
@@ -130,6 +141,7 @@ namespace gc
 			return *this;
 		}
 		
+		// Move operator
 		gc_ptr<T>& operator=(gc_ptr<T> && other)
 		{
 			if (other.backing != backing)
@@ -175,7 +187,7 @@ namespace gc
 		{
 			if (backing && --backing->refCount == 0)
 			{
-				backing->deletePointee();
+				delete (T*) backing->to;
 				delete backing;
 			}
 			

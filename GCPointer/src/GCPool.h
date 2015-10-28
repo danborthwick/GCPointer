@@ -19,13 +19,14 @@ namespace gc
 	protected:
 		using OwnerType = gc_ptr_base::OwnerType;
 		friend class gc_ptr_base;
-		friend size_t live_object_count();
+		friend size_t live_pointer_count();
 
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;
 		
 		OwnerPointerMap pointers;
+		MapIt lastInsertion;
 		
 		void reset()
 		{
@@ -34,12 +35,12 @@ namespace gc
 		
 		void add(gc_ptr_base& ptr)
 		{
-			pointers.insert({ ptr.owner, &ptr });
+			lastInsertion = pointers.insert({ ptr.owner, &ptr });
 		}
 		
 		void remove(gc_ptr_base& ptr)
 		{
-			map_remove_value_if(pointers, &ptr);
+			map_remove_value_if(pointers, &ptr, lastInsertion);
 		}
 		
 		void mark(Range range)
@@ -77,9 +78,10 @@ namespace gc
 				gc_ptr_base& ptr = *it->second;
 				if (ptr.backing && !ptr.backing->marked)
 				{
-					auto& backing = *ptr.backing;
-					nullifyPointersTo(backing.to);
-					backing.deletePointee();
+					auto* backing = ptr.backing;
+					nullifyPointersTo(backing->to);
+					backing->deletePointee();
+					delete backing;
 					
 					// Iterator now invalid, start again
 					it = pointers.begin();

@@ -175,7 +175,7 @@ TEST_F(GCPointerTest, pointersToBasicTypes)
 		gc_ptr<string> pString = make_gc<string>("Hello World!");
 		gc_ptr<vector<string>> pStringVector = make_gc<vector<string>>();
 		
-		ASSERT_THAT(live_object_count(), Eq(3));
+		ASSERT_THAT(live_pointer_count(), Eq(3));
 	}
 	
 	collectGarbage();
@@ -206,6 +206,7 @@ TEST_F(GCPointerTest, pointersToBasicTypesCanBeHeld)
 		gc_ptr<IntPointerHolder> p = make_gc<IntPointerHolder>(42);
 		
 		ASSERT_THAT(*p->value, Eq(42));
+		ASSERT_THAT(live_pointer_count(), Eq(2)); // p and p->value
 	}
 	
 	collectGarbage();
@@ -247,7 +248,15 @@ TEST_F(GCPointerTest, vectorAccumulate)
 	ASSERT_THAT(*joined, Eq("Once upon a time"));
 }
 
-TEST_F(GCPointerTest, OwnersNeedNotBeGCObjects)
+TEST_F(GCPointerTest, vectorEmplace)
+{
+	vector<StringPtr> v;
+	v.emplace_back(make_gc<string>("a"));
+	
+	ASSERT_THAT(*v[0], Eq("a"));
+}
+
+TEST_F(GCPointerTest, ownersNeedNotBeGCObjects)
 {
 	class NotAnObject {
 	public:
