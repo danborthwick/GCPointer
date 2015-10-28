@@ -26,18 +26,10 @@ namespace gc
 		return gc_pool<T>::instance().makeOwned(owner, std::forward<ARGS>(args)...);
 	}
 	
-	template <class Derived, class Base>
+	template <typename Derived, typename Base>
 	gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base)
 	{
-		using DerivedBackingType = typename gc_ptr<Derived>::Backing;
-		gc_ptr<Derived> derived;
-		
-		if (dynamic_cast<Derived*>(base.get()))
-		{
-			derived.owner = base.owner;
-			derived.backing = (DerivedBackingType*)((void*)base.backing);
-		}
-		return derived;
+		return base.template make_dynamic_cast<Derived, Base>();
 	}
 	
 	size_t live_object_count();

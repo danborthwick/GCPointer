@@ -6,8 +6,11 @@
 namespace gc
 {
 	using uint = unsigned int;
-	
+
+	// Forward declarations
 	void Log(std::string const& s);
+	template<typename T> class gc_ptr;
+	template <typename T> class gc_pool;
 
 	class gc_ptr_base
 	{
@@ -15,9 +18,9 @@ namespace gc
 		using OwnerType = void;
 		using Deleter = std::function<void(void*)>;
 
-	// TODO: Private
-	public:
 		static const OwnerType* cNoOwner;
+
+	private:
 		const OwnerType* owner;
 
 		class Backing {
@@ -34,29 +37,40 @@ namespace gc
 			}
 		} *backing;
 		
+	protected:
 		gc_ptr_base(const OwnerType* owner, Backing* backing)
 		: owner(owner)
 		, backing(backing)
 		{}
 		
 		void* get_void() const { return backing ? backing->to : nullptr; }
-	};
+		
+		template <typename Derived, typename Base>
+		gc_ptr<Derived> make_dynamic_cast()
+		{
+			using DerivedBackingType = typename gc_ptr<Derived>::Backing;
 
-	// Forward declarations for friendship
-	template <typename T>
-	class gc_pool;
+			gc_ptr<Derived> derived;
+			
+			if (dynamic_cast<Derived*>((Base*)get_void()))
+			{
+				derived.owner = owner;
+				derived.backing = (DerivedBackingType*)backing;
+			}
+			return derived;
+		}
+		
+		friend class gc_pool_base;
+		template<typename T> friend class gc_ptr;
+		template <typename Derived, typename Base> friend gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>&);
+	};
 
 	template<typename T>
 	class gc_ptr : public gc_ptr_base
 	{
-	public:
-		friend class gc_pool<T>;
-		
-		//TODO: Base = T
-		template <class Base, class Derived>
-		friend gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base);
-
 	private:
+		template<typename PoolT> friend class gc_pool;
+
 		// Constructors
 		gc_ptr(const OwnerType* owner, T* to)
 		: gc_ptr_base(owner, to ? new Backing({
@@ -83,6 +97,8 @@ namespace gc
 			other.backing = nullptr;
 		}
 		
+		// Copy construct from other (hopefully polymorphic) type
+		// TODO: Make this safe
 		template<typename OtherT>
 		gc_ptr(gc_ptr<OtherT> const& other)
 		: gc_ptr_base(other.owner, nullptr)
