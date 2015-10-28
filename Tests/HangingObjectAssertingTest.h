@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include "GarbageCollection.h"
+#include "GCObject.h"
 
 class HangingObjectAssertingTest : public testing::Test
 {

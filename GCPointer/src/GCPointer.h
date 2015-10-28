@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Containers.h"
-#include "GCObject.h"
 #include <string>
 
 namespace gc
