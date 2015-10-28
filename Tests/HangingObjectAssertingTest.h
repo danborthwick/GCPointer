@@ -16,6 +16,6 @@ public:
 	void TearDown() override
 	{
 		ASSERT_THAT(InstanceCounted::instanceCount(), testing::Eq(0));
-		ASSERT_THAT(gc::live_object_count(), testing::Eq(0));
+		ASSERT_THAT(gc::live_pointer_count(), testing::Eq(0));
 	}
 };

@@ -32,5 +32,5 @@ namespace gc
 		return base.template make_dynamic_cast<Derived, Base>();
 	}
 	
-	size_t live_object_count();
+	size_t live_pointer_count();
 }
