@@ -47,16 +47,16 @@ namespace gc
 			for (MapIt it = range.first; it != range.second; ++it)
 			{
 				gc_ptr_base& ptr = *it->second;
-				if (ptr.impl)
+				if (ptr.backing)
 				{
-					if (ptr.impl->marked)
+					if (ptr.backing->marked)
 					{
 						// Already encountered this part of the graph, terminate recursion
 						break;
 					}
 					else
 					{
-						ptr.impl->marked = true;
+						ptr.backing->marked = true;
 					}
 				}
 				
@@ -75,14 +75,11 @@ namespace gc
 			for (auto it = pointers.begin(); it != pointers.end(); )
 			{
 				gc_ptr_base& ptr = *it->second;
-				if (ptr.impl && !ptr.impl->marked)
+				if (ptr.backing && !ptr.backing->marked)
 				{
-					// TODO: Can't assume Object*
-					Object* pointee = (Object*)ptr.get_void();
-					nullifyPointersTo(pointee);
-					
-					// TODO: Need to prevent this invalidating iterator
-					delete pointee;
+					auto& backing = *ptr.backing;
+					nullifyPointersTo(backing.to);
+					backing.deletePointee();
 					
 					// Iterator now invalid, start again
 					it = pointers.begin();
@@ -97,9 +94,9 @@ namespace gc
 			for (auto entry : pointers)
 			{
 				gc_ptr_base& p = *entry.second;
-				if (p.impl && (p.impl->to == pointee))
+				if (p.backing && (p.backing->to == pointee))
 				{
-					p.impl = nullptr;
+					p.backing = nullptr;
 				}
 			}
 		}
@@ -109,9 +106,9 @@ namespace gc
 			for (auto entry : pointers)
 			{
 				gc_ptr_base& p = *entry.second;
-				if (p.impl)
+				if (p.backing)
 				{
-					p.impl->marked = false;
+					p.backing->marked = false;
 				}
 			}
 		}

@@ -14,25 +14,33 @@ namespace gc
 	{
 	public:
 		using OwnerType = void;
+		using Deleter = std::function<void(void*)>;
 
 	// TODO: Private
 	public:
 		static const OwnerType* cNoOwner;
 		const OwnerType* owner;
 
-		class impl_class {
+		class Backing {
 		public:
 			void* to;
+			Deleter& deleter;
 			uint refCount;
 			bool marked;
-		} *impl;
+			
+			void deletePointee()
+			{
+				deleter(to);
+				to = nullptr;
+			}
+		} *backing;
 		
-		gc_ptr_base(const OwnerType* owner, impl_class* impl)
+		gc_ptr_base(const OwnerType* owner, Backing* backing)
 		: owner(owner)
-		, impl(impl)
+		, backing(backing)
 		{}
 		
-		void* get_void() const { return impl ? impl->to : nullptr; }
+		void* get_void() const { return backing ? backing->to : nullptr; }
 	};
 
 	// Forward declarations for friendship
@@ -52,7 +60,9 @@ namespace gc
 	private:
 		// Constructors
 		gc_ptr(const OwnerType* owner, T* to)
-		: gc_ptr_base(owner, to ? new impl_class({ to, 1 , false }) : nullptr)
+		: gc_ptr_base(owner, to ? new Backing({
+			to, make_deleter(), 1 , false
+		}) : nullptr)
 		{}
 		
 	public:
@@ -64,21 +74,21 @@ namespace gc
 		gc_ptr(gc_ptr const& other)
 		: gc_ptr_base(other.owner, nullptr)
 		{
-			retain(other.impl);
+			retain(other.backing);
 		}
 		
 		// Move constructor
 		gc_ptr(gc_ptr&& other)
-		: gc_ptr_base(other.owner, std::move(other.impl))
+		: gc_ptr_base(other.owner, std::move(other.backing))
 		{
-			other.impl = nullptr;
+			other.backing = nullptr;
 		}
 		
 		template<typename OtherT>
 		gc_ptr(gc_ptr<OtherT> const& other)
 		: gc_ptr_base(other.owner, nullptr)
 		{
-			retain(other.impl);
+			retain(other.backing);
 		}
 		
 		~gc_ptr()
@@ -95,65 +105,72 @@ namespace gc
 		
 		gc_ptr<T>& operator=(gc_ptr<T> const& other)
 		{
-			if (other.impl != impl)
+			if (other.backing != backing)
 			{
 				release();
-				retain(other.impl);
+				retain(other.backing);
 			}
 			return *this;
 		}
 		
 		gc_ptr<T>& operator=(gc_ptr<T> && other)
 		{
-			if (other.impl != impl)
+			if (other.backing != backing)
 			{
 				release();
-				impl = other.impl;
+				backing = other.backing;
 				
-				other.impl = nullptr;
+				other.backing = nullptr;
 			}
 			return *this;
 		}
 		
 		bool operator<(gc_ptr<T> const& other) const
 		{
-			if (!impl)
+			if (!backing)
 				return true;
-			else if (!other.impl)
+			else if (!other.backing)
 				return false;
 			else
-				return impl->to < other.impl->to;
+				return backing->to < other.backing->to;
 		}
 		
 		int refCount() const
 		{
-			return impl ? impl->refCount : 0;
+			return backing ? backing->refCount : 0;
 		}
 		
 		std::string to_string() const
 		{
-			return std::string("gc_ptr{ ") + (impl ? to_string(*impl->to) : " null ") + " }";
+			return std::string("gc_ptr{ ") + (backing ? to_string(*backing->to) : " null ") + " }";
 		}
 		
 	private:
-		void retain(impl_class* newImpl)
+		void retain(Backing* newBacking)
 		{
-			if (newImpl)
-				newImpl->refCount++;
+			if (newBacking)
+				newBacking->refCount++;
 			
-			impl = newImpl;
+			backing = newBacking;
 		}
 		
 		void release()
 		{
-			if (impl && --impl->refCount == 0)
+			if (backing && --backing->refCount == 0)
 			{
-				delete (T*) impl->to;
-				impl->to = nullptr;
-				delete impl;
+				backing->deletePointee();
+				delete backing;
 			}
 			
-			impl = nullptr;
+			backing = nullptr;
+		}
+		
+		Deleter& make_deleter()
+		{
+			static Deleter sDeleter = [] (void* p) {
+				delete (T*) p;
+			};
+			return sDeleter;
 		}
 	};
 }

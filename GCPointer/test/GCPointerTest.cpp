@@ -366,5 +366,3 @@ TEST_F(GCPointerTest, OwnersNeedNotBeGCObjects)
 	}
 	collectGarbage();
 }
-
-// TODO: Self referencing
