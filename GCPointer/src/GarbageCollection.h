@@ -29,7 +29,7 @@ namespace gc
 	template <typename Derived, typename Base>
 	gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>& base)
 	{
-		return base.template make_dynamic_cast<Derived, Base>();
+		return gc_pool<Base>::instance().template makeDynamicCast<Derived>(base);
 	}
 	
 	size_t live_pointer_count();

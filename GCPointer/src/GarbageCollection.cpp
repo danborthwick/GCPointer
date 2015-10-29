@@ -13,5 +13,6 @@ void gc::collectGarbage()
 
 size_t gc::live_pointer_count()
 {
-	return gc_pool_base::sInstance.pointers.size();
+	auto& pool = gc_pool_base::sInstance;
+	return pool.owned.size();
 }

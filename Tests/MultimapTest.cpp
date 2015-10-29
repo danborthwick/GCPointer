@@ -6,6 +6,7 @@ using namespace std;
 using namespace testing;
 
 using intStringMap = multimap<int, string>;
+
 const intStringMap cStart = {
 	{ 4, "four" },
 	{ 6, "six" },
@@ -20,9 +21,15 @@ const intStringMap cNoSixes = {
 	{ 8, "eight" }
 };
 
+const intStringMap cOneSix = {
+	{ 4, "four" },
+	{ 6, "six" },
+	{ 7, "seven" },
+	{ 8, "eight" }
+};
+
 TEST(MultimapTest, Erasing)
 {
-	using intStringMap = multimap<int, string>;
 	intStringMap mm = cStart;
 
 	for (auto it = mm.begin(); it != mm.end(); )
@@ -42,7 +49,6 @@ TEST(MultimapTest, Erasing)
 
 TEST(MultimapTest, ErasingWithUtilValue)
 {
-	using intStringMap = multimap<int, string>;
 	intStringMap mm = cStart;
 
 	map_remove_value_if(mm, string("six"));
@@ -53,7 +59,6 @@ TEST(MultimapTest, ErasingWithUtilValue)
 
 TEST(MultimapTest, ErasingWithUtilPredicate)
 {
-	using intStringMap = multimap<int, string>;
 	intStringMap mm = cStart;
 	
 	map_remove_value_if(mm, [](string& s) {
@@ -61,4 +66,13 @@ TEST(MultimapTest, ErasingWithUtilPredicate)
 	});
 	
 	ASSERT_THAT(mm, Eq(cNoSixes));
+}
+
+TEST(MultimapTest, ErasingWithKeyValue)
+{
+	intStringMap mm = cStart;
+	
+	map_remove(mm, 6, string("six2"));
+	
+	ASSERT_THAT(mm, Eq(cOneSix));
 }

@@ -48,3 +48,5 @@ TEST_F(GCPointerCastingTest, UpCastPointerToNonBaseGivesCompileError)
 	gc_ptr<NotDerivedFromBase> notDerived = make_gc<NotDerivedFromBase>();
 // Compile error	gc_ptr<Base> base = gc::dynamic_pointer_cast<Base>(notDerived);
 }
+
+//TODO: Test dynamic casts are garbage collected

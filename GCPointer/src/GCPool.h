@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GCPointer.h"
+#include <map>
 
 namespace gc
 {
@@ -25,22 +26,22 @@ namespace gc
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;
 		
-		OwnerPointerMap pointers;
+		OwnerPointerMap owned;
 		MapIt lastInsertion;
 		
 		void reset()
 		{
-			pointers.clear();
+			owned.clear();
 		}
 		
 		void add(gc_ptr_base& ptr)
 		{
-			lastInsertion = pointers.insert({ ptr.owner, &ptr });
+			lastInsertion = owned.insert({ ptr.owner, &ptr });
 		}
 		
 		void remove(gc_ptr_base& ptr)
 		{
-			map_remove_value_if(pointers, &ptr, lastInsertion);
+			map_remove(owned, ptr.owner, &ptr);
 		}
 		
 		void mark(Range range)
@@ -68,12 +69,12 @@ namespace gc
 		Range childrenOf(gc_ptr_base& parent)
 		{
 			OwnerType* owner = (OwnerType*) parent.get_void();
-			return pointers.equal_range(owner);
+			return owned.equal_range(owner);
 		}
 		
 		void deleteUnmarked()
 		{
-			for (auto it = pointers.begin(); it != pointers.end(); )
+			for (auto it = owned.begin(); it != owned.end(); )
 			{
 				gc_ptr_base& ptr = *it->second;
 				if (ptr.backing && !ptr.backing->marked)
@@ -84,7 +85,7 @@ namespace gc
 					delete backing;
 					
 					// Iterator now invalid, start again
-					it = pointers.begin();
+					it = owned.begin();
 				}
 				else
 					++it;
@@ -93,7 +94,7 @@ namespace gc
 		
 		void nullifyPointersTo(OwnerType* pointee)
 		{
-			for (auto entry : pointers)
+			for (auto entry : owned)
 			{
 				gc_ptr_base& p = *entry.second;
 				if (p.backing && (p.backing->to == pointee))
@@ -105,7 +106,7 @@ namespace gc
 		
 		void unmarkAll()
 		{
-			for (auto entry : pointers)
+			for (auto entry : owned)
 			{
 				gc_ptr_base& p = *entry.second;
 				if (p.backing)
@@ -117,7 +118,7 @@ namespace gc
 		
 		Range unownedPointers()
 		{
-			return pointers.equal_range(gc_ptr_base::cNoOwner);
+			return owned.equal_range(gc_ptr_base::cNoOwner);
 		}
 	};
 	
@@ -161,14 +162,22 @@ namespace gc
 			return p;
 		}
 		
+		template <typename Derived>
+		gc_ptr<Derived> makeDynamicCast(gc_ptr<T>& base)
+		{
+			gc_ptr<Derived> p = base.template make_dynamic_cast<Derived, T>();
+			add(p);
+			return p;
+		}
+		
 		std::string to_string() const
 		{
-			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(pointers.size());
-			for (auto it = pointers.begin(); it != pointers.end(); ++it)
+			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(owned.size());
+			for (auto it = owned.begin(); it != owned.end(); ++it)
 			{
 				result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
 			}
-			result += pointers.size() ? "\n}" : "}";
+			result += owned.size() ? "\n}" : "}";
 			
 			return result;
 		}

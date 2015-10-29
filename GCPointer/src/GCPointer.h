@@ -57,7 +57,6 @@ namespace gc
 			
 			if (dynamic_cast<Derived*>((Base*)get_void()))
 			{
-				derived.owner = owner;
 				derived.backing = (DerivedBackingType*)backing;
 			}
 			return derived;
