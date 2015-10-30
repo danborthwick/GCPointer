@@ -2,6 +2,7 @@
 
 #include "GCPointer.h"
 #include <map>
+#include <unordered_set>
 
 namespace gc
 {
@@ -22,26 +23,30 @@ namespace gc
 		friend class gc_ptr_base;
 		friend size_t live_pointer_count();
 
+		using PointerSet = std::unordered_set<gc_ptr_base*>;
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;
 		
-		OwnerPointerMap owned;
+		PointerSet allPointers;
+		OwnerPointerMap ownedPointers;
 		MapIt lastInsertion;
 		
 		void reset()
 		{
-			owned.clear();
+			ownedPointers.clear();
 		}
 		
 		void add(gc_ptr_base& ptr)
 		{
-			lastInsertion = owned.insert({ ptr.owner, &ptr });
+			lastInsertion = ownedPointers.insert({ ptr.owner, &ptr });
+			allPointers.insert(&ptr);
 		}
 		
 		void remove(gc_ptr_base& ptr)
 		{
-			map_remove(owned, ptr.owner, &ptr);
+			map_remove(ownedPointers, ptr.owner, &ptr);
+			allPointers.erase(&ptr);
 		}
 		
 		void mark(Range range)
@@ -69,14 +74,14 @@ namespace gc
 		Range childrenOf(gc_ptr_base& parent)
 		{
 			OwnerType* owner = (OwnerType*) parent.get_void();
-			return owned.equal_range(owner);
+			return ownedPointers.equal_range(owner);
 		}
 		
 		void deleteUnmarked()
 		{
-			for (auto it = owned.begin(); it != owned.end(); )
+			for (auto it = allPointers.begin(); it != allPointers.end(); )
 			{
-				gc_ptr_base& ptr = *it->second;
+				gc_ptr_base& ptr = **it;
 				if (ptr.backing && !ptr.backing->marked)
 				{
 					auto* backing = ptr.backing;
@@ -85,40 +90,41 @@ namespace gc
 					delete backing;
 					
 					// Iterator now invalid, start again
-					it = owned.begin();
+					// TODO: One pass
+					it = allPointers.begin();
 				}
 				else
 					++it;
 			}
 		}
 		
-		void nullifyPointersTo(OwnerType* pointee)
+		void nullifyPointersTo(void* pointee)
 		{
-			for (auto entry : owned)
+			for (auto it : allPointers)
 			{
-				gc_ptr_base& p = *entry.second;
-				if (p.backing && (p.backing->to == pointee))
+				gc_ptr_base& ptr = *it;
+				if (ptr.backing && (ptr.backing->to == pointee))
 				{
-					p.backing = nullptr;
+					ptr.backing = nullptr;
 				}
 			}
 		}
 		
 		void unmarkAll()
 		{
-			for (auto entry : owned)
+			for (auto it : allPointers)
 			{
-				gc_ptr_base& p = *entry.second;
-				if (p.backing)
+				gc_ptr_base& ptr = *it;
+				if (ptr.backing)
 				{
-					p.backing->marked = false;
+					ptr.backing->marked = false;
 				}
 			}
 		}
 		
 		Range unownedPointers()
 		{
-			return owned.equal_range(gc_ptr_base::cNoOwner);
+			return ownedPointers.equal_range(gc_ptr_base::cNoOwner);
 		}
 	};
 	
@@ -172,12 +178,12 @@ namespace gc
 		
 		std::string to_string() const
 		{
-			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(owned.size());
-			for (auto it = owned.begin(); it != owned.end(); ++it)
+			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(ownedPointers.size());
+			for (auto it = ownedPointers.begin(); it != ownedPointers.end(); ++it)
 			{
 				result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
 			}
-			result += owned.size() ? "\n}" : "}";
+			result += ownedPointers.size() ? "\n}" : "}";
 			
 			return result;
 		}
