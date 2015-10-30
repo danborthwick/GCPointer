@@ -16,7 +16,7 @@
 		93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F2A1BC08A9C001F5870 /* gmock-all.cc */; };
 		93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F3A1BC08D2A001F5870 /* gtest-all.cc */; };
 		93BDBBD21BE0F554002F9CD9 /* GCPointerTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */; };
-		93BDBBD31BE0F554002F9CD9 /* MultimapTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */; };
+		93BDBBD31BE0F554002F9CD9 /* ContainersTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD11BE0F554002F9CD9 /* ContainersTest.cpp */; };
 		93BDBBD91BE14684002F9CD9 /* PerformanceTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93BDBBD81BE14683002F9CD9 /* PerformanceTest.cpp */; };
 /* End PBXBuildFile section */
 
@@ -70,7 +70,7 @@
 		93B72F411BC08D2A001F5870 /* gtest-typed-test.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "gtest-typed-test.cc"; path = "libs/gtest/src/gtest-typed-test.cc"; sourceTree = "<group>"; };
 		93B72F421BC08D2A001F5870 /* gtest.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = gtest.cc; path = libs/gtest/src/gtest.cc; sourceTree = "<group>"; };
 		93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GCPointerTest.cpp; sourceTree = "<group>"; };
-		93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MultimapTest.cpp; sourceTree = "<group>"; };
+		93BDBBD11BE0F554002F9CD9 /* ContainersTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ContainersTest.cpp; sourceTree = "<group>"; };
 		93BDBBD41BE0F5BF002F9CD9 /* Containers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Containers.h; path = src/Containers.h; sourceTree = "<group>"; };
 		93BDBBD51BE0F5CA002F9CD9 /* TestObjects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestObjects.h; sourceTree = "<group>"; };
 		93BDBBD71BE1434D002F9CD9 /* ObjectNetwork.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ObjectNetwork.h; sourceTree = "<group>"; };
@@ -137,7 +137,7 @@
 				93B72F371BC08AA3001F5870 /* GMock */,
 				93BDBBD01BE0F554002F9CD9 /* GCPointerTest.cpp */,
 				93BDBBD81BE14683002F9CD9 /* PerformanceTest.cpp */,
-				93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */,
+				93BDBBD11BE0F554002F9CD9 /* ContainersTest.cpp */,
 				9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */,
 				930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */,
 			);
@@ -279,7 +279,7 @@
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
 				93BDBBD91BE14684002F9CD9 /* PerformanceTest.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
-				93BDBBD31BE0F554002F9CD9 /* MultimapTest.cpp in Sources */,
+				93BDBBD31BE0F554002F9CD9 /* ContainersTest.cpp in Sources */,
 				9301146F1BC8033E00ED2D6F /* SharedPtrTest.cpp in Sources */,
 				93BDBBD21BE0F554002F9CD9 /* GCPointerTest.cpp in Sources */,
 				930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */,

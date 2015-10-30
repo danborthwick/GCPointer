@@ -19,34 +19,41 @@ namespace gc
 		}
 
 	protected:
-		using OwnerType = gc_ptr_base::OwnerType;
 		friend class gc_ptr_base;
 		friend size_t live_pointer_count();
 
-		using PointerSet = std::unordered_set<gc_ptr_base*>;
-		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
+		struct PointerToPointeeHash {
+			std::size_t operator() (gc_ptr_base* const& ptr) const
+			{
+				return std::hash<void*>()(ptr->get_void());
+			}
+		};
+
+		using PointerSet = std::unordered_multiset<gc_ptr_base*, PointerToPointeeHash>;
+		using OwnerPointerMap = std::multimap<const void*, gc_ptr_base*>;
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;
 		
-		PointerSet allPointers;
-		OwnerPointerMap ownedPointers;
+		PointerSet pointeeToPointer;
+		OwnerPointerMap ownerToPointer;
 		MapIt lastInsertion;
 		
 		void reset()
 		{
-			ownedPointers.clear();
+			ownerToPointer.clear();
+			pointeeToPointer.clear();
 		}
 		
 		void add(gc_ptr_base& ptr)
 		{
-			lastInsertion = ownedPointers.insert({ ptr.owner, &ptr });
-			allPointers.insert(&ptr);
+			lastInsertion = ownerToPointer.insert({ ptr.owner, &ptr });
+			pointeeToPointer.insert(&ptr);
 		}
 		
 		void remove(gc_ptr_base& ptr)
 		{
-			map_remove(ownedPointers, ptr.owner, &ptr);
-			allPointers.erase(&ptr);
+			map_remove(ownerToPointer, ptr.owner, &ptr);
+			set_remove_value_with_rehash(pointeeToPointer, &ptr);
 		}
 		
 		void mark(Range range)
@@ -73,15 +80,15 @@ namespace gc
 		
 		Range childrenOf(gc_ptr_base& parent)
 		{
-			OwnerType* owner = (OwnerType*) parent.get_void();
-			return ownedPointers.equal_range(owner);
+			void* owner = parent.get_void();
+			return ownerToPointer.equal_range(owner);
 		}
 		
 		void deleteUnmarked()
 		{
-			for (auto it = allPointers.begin(); it != allPointers.end(); )
+			for (auto it = ownerToPointer.begin(); it != ownerToPointer.end(); )
 			{
-				gc_ptr_base& ptr = **it;
+				gc_ptr_base& ptr = *it->second;
 				if (ptr.backing && !ptr.backing->marked)
 				{
 					auto* backing = ptr.backing;
@@ -91,7 +98,7 @@ namespace gc
 					
 					// Iterator now invalid, start again
 					// TODO: One pass
-					it = allPointers.begin();
+					it = ownerToPointer.begin();
 				}
 				else
 					++it;
@@ -100,9 +107,9 @@ namespace gc
 		
 		void nullifyPointersTo(void* pointee)
 		{
-			for (auto it : allPointers)
+			for (auto it : ownerToPointer)
 			{
-				gc_ptr_base& ptr = *it;
+				gc_ptr_base& ptr = *it.second;
 				if (ptr.backing && (ptr.backing->to == pointee))
 				{
 					ptr.backing = nullptr;
@@ -112,9 +119,9 @@ namespace gc
 		
 		void unmarkAll()
 		{
-			for (auto it : allPointers)
+			for (auto it : ownerToPointer)
 			{
-				gc_ptr_base& ptr = *it;
+				gc_ptr_base& ptr = *it.second;
 				if (ptr.backing)
 				{
 					ptr.backing->marked = false;
@@ -124,7 +131,12 @@ namespace gc
 		
 		Range unownedPointers()
 		{
-			return ownedPointers.equal_range(gc_ptr_base::cNoOwner);
+			return ownerToPointer.equal_range(gc_ptr_base::cNoOwner);
+		}
+		
+		void updatePointeeToPointer()
+		{
+			pointeeToPointer.rehash(0);
 		}
 	};
 	
@@ -154,14 +166,14 @@ namespace gc
 		}
 		
 		template<typename... ARGS>
-		Ptr makeOwned(const OwnerType* owner, ARGS... args)
+		Ptr makeOwned(const void* owner, ARGS... args)
 		{
 			Ptr p(owner, new T(std::forward<ARGS>(args)...));
 			add(p);
 			return p;
 		}
 		
-		Ptr makeOwnedNull(OwnerType* owner)
+		Ptr makeOwnedNull(void* owner)
 		{
 			Ptr p(owner, nullptr);
 			add(p);
@@ -178,12 +190,12 @@ namespace gc
 		
 		std::string to_string() const
 		{
-			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(ownedPointers.size());
-			for (auto it = ownedPointers.begin(); it != ownedPointers.end(); ++it)
+			std::string result = std::string("gc_pool<") + typeid(T).name() + "> { size: " + std::to_string(ownerToPointer.size());
+			for (auto it = ownerToPointer.begin(); it != ownerToPointer.end(); ++it)
 			{
 				result += "\n\t{ " + it->first->to_string() + ", " + it->second->to_string() + " }";
 			}
-			result += ownedPointers.size() ? "\n}" : "}";
+			result += ownerToPointer.size() ? "\n}" : "}";
 			
 			return result;
 		}

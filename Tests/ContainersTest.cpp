@@ -77,23 +77,40 @@ TEST(ContainersTest, MapRemove)
 	ASSERT_THAT(mm, Eq(cOneSix));
 }
 
-using StringMap = unordered_multiset<string>;
-const StringMap cEvenStringSet = {
+using StringSet = unordered_multiset<string>;
+const StringSet cEvenStringSet = {
 	"two", "four", "six", "eight"
 };
 
-TEST(ContainersTest, SetRemoveWithCorrectHint)
+TEST(ContainersTest, SetRemove)
 {
-	StringMap sm = cEvenStringSet;
-	auto hint = sm.find("four");
-	set_remove_value(sm, string("four"), hint);
-	ASSERT_THAT(sm, Eq(StringMap { "two", "six", "eight" }));
+	StringSet set = cEvenStringSet;
+	set_remove_value_with_rehash(set, string("four"));
+	ASSERT_THAT(set, Eq(StringSet { "two", "six", "eight" }));
 }
 
-TEST(ContainersTest, SetRemoveWithIncorrectHint)
+struct StringPointerHash {
+	size_t operator() (string* const& s) const
+	{
+		return std::hash<string>()(*s);
+	}
+};
+using StringPointerSet = unordered_multiset<string*, StringPointerHash>;
+
+TEST(ContainersTest, SetRemoveAfterHashInvalidated)
 {
-	StringMap sm = cEvenStringSet;
-	auto hint = sm.find("eight");
-	set_remove_value(sm, string("four"), hint);
-	ASSERT_THAT(sm, Eq(StringMap { "two", "six", "eight" }));
+	string immutables[] = { "immutable 1", "immutable 2" };
+	string mutableString = "mutableBefore";
+	
+	StringPointerSet set = { &mutableString, &immutables[0], &immutables[1] };
+	
+	mutableString = "mutableAfter"; // Changes expected hash
+	
+	// Should do nothing as hash has changed
+	set_remove_value(set, &mutableString);
+	ASSERT_THAT(set, SizeIs(3));
+	
+	set_remove_value_with_rehash(set, &mutableString);
+	
+	ASSERT_THAT(set, Eq(StringPointerSet { &immutables[0], &immutables[1] }));
 }

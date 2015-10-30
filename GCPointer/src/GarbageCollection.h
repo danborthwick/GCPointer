@@ -15,13 +15,13 @@ namespace gc
 	}
 	
 	template <typename T, typename... ARGS>
-	gc_ptr<T> make_owned_null_gc(gc_ptr_base::OwnerType* owner)
+	gc_ptr<T> make_owned_null_gc(void* owner)
 	{
 		return gc_pool<T>::instance().makeOwnedNull(owner);
 	}
 	
 	template <typename T, typename... ARGS>
-	gc_ptr<T> make_owned_gc(gc_ptr_base::OwnerType* owner, ARGS&&... args)
+	gc_ptr<T> make_owned_gc(void* owner, ARGS&&... args)
 	{
 		return gc_pool<T>::instance().makeOwned(owner, std::forward<ARGS>(args)...);
 	}

@@ -58,25 +58,19 @@ void map_remove(std::multimap<Key, Value>& map, Key const& key, Value const& val
 template<typename Value, typename Hash>
 void set_remove_value(std::unordered_multiset<Value, Hash>& set, Value const& value)
 {
-	for (auto it = set.begin(); it != set.end(); )
-	{
-		if (*it == value)
-			it = set.erase(it);
-		else
-			++it;
-	}
+	set.erase(value);
 }
 
 template<typename Value, typename Hash>
-void set_remove_value(std::unordered_multiset<Value, Hash>& set, Value const& value,
-						 typename std::unordered_multiset<Value, Hash>::iterator& hint)
+void set_remove_value_with_rehash(std::unordered_multiset<Value, Hash>& set, Value const& value)
 {
-	if (*hint == value)
+	auto position = set.find(value);
+	
+	if (position == set.end())
 	{
-		hint = set.erase(hint, std::next(hint));
+		set.rehash(0);
+		position = set.find(value);
 	}
-	else
-	{
-		set_remove_value(set, value);
-	}
+	
+	set.erase(value);
 }

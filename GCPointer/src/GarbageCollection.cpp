@@ -2,7 +2,7 @@
 
 using namespace gc;
 
-const gc_ptr_base::OwnerType* gc_ptr_base::cNoOwner { nullptr };
+const void* gc_ptr_base::cNoOwner { nullptr };
 
 gc_pool_base gc_pool_base::sInstance {};
 
@@ -14,5 +14,5 @@ void gc::collectGarbage()
 size_t gc::live_pointer_count()
 {
 	auto& pool = gc_pool_base::sInstance;
-	return pool.allPointers.size();
+	return pool.ownerToPointer.size();
 }

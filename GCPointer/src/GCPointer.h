@@ -18,13 +18,12 @@ namespace gc
 	class gc_ptr_base
 	{
 	public:
-		using OwnerType = void;
-		static const OwnerType* cNoOwner;
+		static const void* cNoOwner;
 	protected:
 		using Deleter = std::function<void(void*)>;
 
 	private:
-		const OwnerType* owner;
+		const void* owner;
 
 		class Backing {
 		public:
@@ -41,7 +40,7 @@ namespace gc
 		} *backing;
 		
 	protected:
-		gc_ptr_base(const OwnerType* owner, Backing* backing)
+		gc_ptr_base(const void* owner, Backing* backing)
 		: owner(owner)
 		, backing(backing)
 		{}
@@ -74,7 +73,7 @@ namespace gc
 		template<typename PoolT> friend class gc_pool;
 
 		// Constructors
-		gc_ptr(const OwnerType* owner, T* to)
+		gc_ptr(const void* owner, T* to)
 		: gc_ptr_base(owner, to ? new Backing({
 			to, make_deleter(), 1 , false
 		}) : nullptr)
