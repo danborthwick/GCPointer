@@ -2,6 +2,7 @@
 
 #include "GCPointer.h"
 #include <map>
+#include <set>
 
 namespace gc
 {
@@ -23,11 +24,14 @@ namespace gc
 		friend size_t live_pointer_count();
 
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
+		using BackingSet = std::set<gc_ptr_base::Backing*>;
 		using MapIt = typename OwnerPointerMap::iterator;
 		using Range = std::pair<MapIt, MapIt>;
 		
 		OwnerPointerMap owned;
+		BackingSet backings;
 		MapIt lastInsertion;
+		bool isCollecting = false;
 		
 		void reset()
 		{
@@ -37,6 +41,8 @@ namespace gc
 		void add(gc_ptr_base& ptr)
 		{
 			lastInsertion = owned.insert({ ptr.owner, &ptr });
+			if (ptr.backing)
+				backings.insert(ptr.backing);
 		}
 		
 		void remove(gc_ptr_base& ptr)
@@ -74,35 +80,20 @@ namespace gc
 		
 		void deleteUnmarked()
 		{
-			for (auto it = owned.begin(); it != owned.end(); )
+			isCollecting = true;	// TODO: Lock?
+
+			for (auto it : backings)
 			{
-				gc_ptr_base& ptr = *it->second;
-				if (ptr.backing && !ptr.backing->marked)
-				{
-					auto* backing = ptr.backing;
-					nullifyPointersTo(backing->to);
-					backing->deletePointee();
-					delete backing;
-					
-					// Iterator now invalid, start again
-					it = owned.begin();
-				}
-				else
-					++it;
+				gc_ptr_base::Backing& backing = *it;
+				if (!backing.marked)
+					backing.deletePointee();
 			}
+
+			//TODO: Remove invalid backings
+
+			isCollecting = false;
 		}
 		
-		void nullifyPointersTo(OwnerType* pointee)
-		{
-			for (auto entry : owned)
-			{
-				gc_ptr_base& p = *entry.second;
-				if (p.backing && (p.backing->to == pointee))
-				{
-					p.backing = nullptr;
-				}
-			}
-		}
 		
 		void unmarkAll()
 		{

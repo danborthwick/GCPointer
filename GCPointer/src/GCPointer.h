@@ -32,6 +32,7 @@ namespace gc
 			Deleter& deleter;
 			uint refCount;
 			bool marked;
+			bool deleted;
 			
 			void deletePointee()
 			{
@@ -186,8 +187,11 @@ namespace gc
 		{
 			if (backing && --backing->refCount == 0)
 			{
-				delete (T*) backing->to;
-				delete backing;
+				if (!gc_pool<T>::instance().isCollecting)
+				{
+					delete (T*) backing->to;
+					delete backing;
+				}
 			}
 			
 			backing = nullptr;
