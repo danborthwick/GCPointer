@@ -1,8 +1,34 @@
 #pragma once
 
+#include <gmock/gmock.h>
 #include <future>
 
-#define GTEST_TIMEOUT_BEGIN auto asyncFuture = std::async(std::launch::async, [this]()->void {
+namespace testing
+{
+	struct TimedTest {
+		std::future<void> future;
+	};
+	
+	::std::ostream& operator<<(::std::ostream& os, const TimedTest&)
+	{
+		return os << "Timed test";
+	}
 
-#define GTEST_TIMEOUT_END(X) return; }); \
-EXPECT_TRUE(asyncFuture.wait_for(std::chrono::milliseconds(X)) != std::future_status::timeout);
+	
+	MATCHER_P(RunsInLessThanMillis, timeoutMillis, "") {
+		*result_listener << "took more than " << timeoutMillis << "ms to execute";
+		TimedTest const& test = arg;
+		bool timedOut = test.future.wait_for(std::chrono::milliseconds(timeoutMillis)) != std::future_status::timeout;
+		
+		// Complete test even if it times out, to avoid leaks etc.
+		if (timedOut) {
+			test.future.wait();
+		}
+		
+		return timedOut;
+	}
+
+	TimedTest timedTest(std::function<void()> f) {
+		return { std::async(std::launch::async, f) };
+	}
+}

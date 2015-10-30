@@ -12,16 +12,16 @@ TEST_F(PerformanceTest, largeNetworkIsGarbageCollectedQuickly)
 {
 	const int nodeCount = 5000;
 	
-	GTEST_TIMEOUT_BEGIN
+	auto test = timedTest([] {
+		{
+			ObjectNetwork network(nodeCount);
+			ASSERT_THAT(InstanceCounted::instanceCount(), Eq(nodeCount));
+		}
+		
+		ASSERT_THAT(InstanceCounted::instanceCount(), AllOf(Gt(0), Lt(nodeCount)));
+		
+		collectGarbage();
+	});
 	
-	{
-		ObjectNetwork network(nodeCount);
-		ASSERT_THAT(InstanceCounted::instanceCount(), Eq(nodeCount));
-	}
-	
-	ASSERT_THAT(InstanceCounted::instanceCount(), AllOf(Gt(0), Lt(nodeCount)));
-	
-	collectGarbage();
-	
-	GTEST_TIMEOUT_END(1000)
+	ASSERT_THAT(test, RunsInLessThanMillis(200));
 }
