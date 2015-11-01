@@ -10,7 +10,7 @@ class PerformanceTest : public HangingObjectAssertingTest
 
 TEST_F(PerformanceTest, largeNetworkIsGarbageCollectedQuickly)
 {
-	const int nodeCount = 5000;
+	const int nodeCount = 50000;
 	
 	auto test = timedTest([] {
 		{
@@ -23,5 +23,5 @@ TEST_F(PerformanceTest, largeNetworkIsGarbageCollectedQuickly)
 		collectGarbage();
 	});
 	
-	ASSERT_THAT(test, RunsInLessThanMillis(200));
+	ASSERT_THAT(test, RunsInLessThanMillis(300));
 }

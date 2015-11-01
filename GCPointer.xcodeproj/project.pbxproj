@@ -47,6 +47,7 @@
 		930114721BC808AC00ED2D6F /* GarbageCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GarbageCollection.cpp; path = src/GarbageCollection.cpp; sourceTree = "<group>"; };
 		93068DFA1BDE7F4700CAD319 /* GCPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPool.h; path = src/GCPool.h; sourceTree = "<group>"; };
 		93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GarbageCollection.h; path = src/GarbageCollection.h; sourceTree = "<group>"; };
+		9373F21A1BE6A3C000B02678 /* BoolLock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BoolLock.h; path = src/BoolLock.h; sourceTree = "<group>"; };
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72ECB1BC07E24001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		93B72ED41BC07EC4001F5870 /* GCPointer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPointer.h; path = src/GCPointer.h; sourceTree = "<group>"; };
@@ -125,6 +126,7 @@
 				93068DFA1BDE7F4700CAD319 /* GCPool.h */,
 				93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */,
 				930114721BC808AC00ED2D6F /* GarbageCollection.cpp */,
+				9373F21A1BE6A3C000B02678 /* BoolLock.h */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";

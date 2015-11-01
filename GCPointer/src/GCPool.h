@@ -1,5 +1,6 @@
 #pragma once
 
+#include "BoolLock.h"
 #include "GCPointer.h"
 #include <map>
 #include <set>
@@ -88,7 +89,7 @@ namespace gc
 		
 		void deleteUnmarked()
 		{
-			isCollecting = true;	// TODO: Lock?
+			bool_lock lock(isCollecting);
 
 			for (auto it = backings.begin(); it != backings.end(); )
 			{
@@ -102,12 +103,7 @@ namespace gc
 				{
 					++it;
 				}
-				
 			}
-
-			//TODO: Remove invalid backings
-
-			isCollecting = false;
 		}
 		
 		
