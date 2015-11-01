@@ -21,6 +21,8 @@ namespace gc
 	protected:
 		using OwnerType = gc_ptr_base::OwnerType;
 		friend class gc_ptr_base;
+		friend void reset();
+		friend size_t live_object_count();
 		friend size_t live_pointer_count();
 
 		using OwnerPointerMap = std::multimap<const OwnerType*, gc_ptr_base*>;
@@ -36,6 +38,7 @@ namespace gc
 		void reset()
 		{
 			owned.clear();
+			backings.clear();
 		}
 		
 		void add(gc_ptr_base& ptr)
@@ -48,6 +51,11 @@ namespace gc
 		void remove(gc_ptr_base& ptr)
 		{
 			map_remove(owned, ptr.owner, &ptr);
+		}
+		
+		void removeBacking(gc_ptr_base::Backing& backing)
+		{
+			backings.erase(&backing);
 		}
 		
 		void mark(Range range)
@@ -82,11 +90,19 @@ namespace gc
 		{
 			isCollecting = true;	// TODO: Lock?
 
-			for (auto it : backings)
+			for (auto it = backings.begin(); it != backings.end(); )
 			{
-				gc_ptr_base::Backing& backing = *it;
+				gc_ptr_base::Backing& backing = **it;
 				if (!backing.marked)
+				{
 					backing.deletePointee();
+					it = backings.erase(it);
+				}
+				else
+				{
+					++it;
+				}
+				
 			}
 
 			//TODO: Remove invalid backings

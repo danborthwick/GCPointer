@@ -11,6 +11,17 @@ void gc::collectGarbage()
 	gc_pool_base::sInstance.collectGarbage();
 }
 
+void gc::reset()
+{
+	gc_pool_base::sInstance.reset();
+}
+
+size_t gc::live_object_count()
+{
+	auto& pool = gc_pool_base::sInstance;
+	return pool.backings.size();
+}
+
 size_t gc::live_pointer_count()
 {
 	auto& pool = gc_pool_base::sInstance;

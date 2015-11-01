@@ -8,6 +8,11 @@ namespace gc
 {
 	void collectGarbage();
 
+	void reset();
+	
+	size_t live_object_count();
+	size_t live_pointer_count();
+
 	template <typename T, typename... ARGS>
 	gc_ptr<T> make_gc(ARGS&&... args)
 	{
@@ -32,5 +37,4 @@ namespace gc
 		return gc_pool<Base>::instance().template makeDynamicCast<Derived>(base);
 	}
 	
-	size_t live_pointer_count();
 }

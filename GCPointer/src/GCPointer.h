@@ -187,9 +187,11 @@ namespace gc
 		{
 			if (backing && --backing->refCount == 0)
 			{
-				if (!gc_pool<T>::instance().isCollecting)
+				auto& pool = gc_pool<T>::instance();
+				if (!pool.isCollecting)
 				{
 					delete (T*) backing->to;
+					pool.removeBacking(*backing);
 					delete backing;
 				}
 			}
