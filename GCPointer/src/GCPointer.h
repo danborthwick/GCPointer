@@ -32,7 +32,6 @@ namespace gc
 			Deleter& deleter;
 			uint refCount;
 			bool marked;
-			bool deleted;
 			
 			void deletePointee()
 			{
@@ -49,23 +48,9 @@ namespace gc
 		
 		void* get_void() const { return backing ? backing->to : nullptr; }
 		
-		template <typename Derived, typename Base>
-		gc_ptr<Derived> make_dynamic_cast()
-		{
-			using DerivedBackingType = typename gc_ptr<Derived>::Backing;
-
-			gc_ptr<Derived> derived;
-			
-			if (dynamic_cast<Derived*>((Base*)get_void()))
-			{
-				derived.backing = (DerivedBackingType*)backing;
-			}
-			return derived;
-		}
-		
 		friend class gc_pool_base;
-		template<typename T> friend class gc_ptr;
-		template <typename Derived, typename Base> friend gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>&);
+		template<typename OtherT> friend class gc_ptr;
+		template<typename T> friend class gc_pool;
 	};
 
 	template<typename T>
@@ -73,18 +58,29 @@ namespace gc
 	{
 	private:
 		template<typename PoolT> friend class gc_pool;
+		template<typename OtherT> friend class gc_ptr;
+		template<typename Derived, typename Base> friend gc_ptr<Derived> dynamic_pointer_cast(gc_ptr<Base>&);
 
 		// Constructors
 		gc_ptr(const OwnerType* owner, T* to)
-		: gc_ptr_base(owner, to ? new Backing({
+		: gc_ptr(owner, to ? new Backing({
 			to, make_deleter(), 1 , false
 		}) : nullptr)
-		{}
-		
-	public:
-		gc_ptr() : gc_ptr(nullptr, nullptr) {}
+		{
+		}
 
-		gc_ptr(T* to) : gc_ptr(nullptr, to) {}
+		gc_ptr(const OwnerType* owner, Backing* backing)
+		: gc_ptr_base { owner, backing }
+		{
+			gc_pool<T>::instance().add(*this);
+		}
+
+	public:
+		gc_ptr() : gc_ptr(nullptr, (T*)nullptr) {}
+
+		gc_ptr(T* to) : gc_ptr(nullptr, to)
+		{
+		}
 
 		// Copy constructor
 		gc_ptr(gc_ptr const& other)
@@ -117,7 +113,6 @@ namespace gc
 			static_assert(std::is_base_of<T, OtherT>::value, "gc_ptr is not convertible");
 			other.backing = nullptr;
 		}
-		
 
 		~gc_ptr()
 		{
@@ -206,5 +201,20 @@ namespace gc
 			};
 			return sDeleter;
 		}
+		
+		template <typename Derived, typename Base>
+		gc_ptr<Derived> make_dynamic_cast()
+		{
+			using DerivedBackingType = typename gc_ptr<Derived>::Backing;
+			gc_ptr<Derived> derived;
+			
+			if (dynamic_cast<Derived*>((Base*)get_void()))
+			{
+				derived.retain((DerivedBackingType*) backing);
+			}
+			
+			return derived;
+		}
+
 	};
 }

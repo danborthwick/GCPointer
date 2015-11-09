@@ -39,7 +39,7 @@ TEST(SharedPtrTest, UpCastPointerToNonBaseGivesCompileError)
 // Should not compile	shared_ptr<Base> base = dynamic_pointer_cast<Base>(notDerived);
 }
 
-TEST(SharedPointerTest, vectorInitialisation)
+TEST(SharedPointerTest, VectorInitialisation)
 {
 	using StringVector = vector<StringPtr>;
 	StringVector v = { make_shared<string>("alpha"), make_shared<string>("beta") };
@@ -52,7 +52,7 @@ TEST(SharedPointerTest, vectorInitialisation)
 	ASSERT_THAT(*(*pv)[1], Eq("beta"));
 }
 
-TEST(SharedPointerTest, vectorAccumulate)
+TEST(SharedPointerTest, VectorAccumulate)
 {
 	shared_ptr<vector<StringPtr>> v = make_shared<vector<StringPtr>>(initializer_list<StringPtr> {
 		make_shared<string>("Once"),
@@ -72,4 +72,26 @@ TEST(SharedPointerTest, vectorAccumulate)
 	shared_ptr<string> joined = accumulate(v->begin(), v->end(), make_shared<string>(), append);
 	
 	ASSERT_THAT(*joined, Eq("Once upon a time"));
+}
+
+TEST(SharedPointerTest, SharedFromThis)
+{
+	class C : public enable_shared_from_this<C>
+	{
+	public:
+		MOCK_METHOD0(destructor, void());
+		~C() { destructor(); }
+	};
+
+	C* rawPointer = new C;
+	EXPECT_CALL(*rawPointer, destructor()).Times(1);
+
+	{
+		shared_ptr<C> original(rawPointer);
+		
+		// shared_ptr<C> badCopy(rawPointer) would cause a double delete, but shared_from_this is safe
+		shared_ptr<C> goodCopy = original->shared_from_this();
+	}
+	
+	Mock::VerifyAndClearExpectations(rawPointer);	// Force verification, even if object never destroyed
 }

@@ -2,6 +2,7 @@
 
 #include "BoolLock.h"
 #include "GCPointer.h"
+#include "GCPointerFromThis.h"
 #include <map>
 #include <set>
 
@@ -131,6 +132,7 @@ namespace gc
 	public:
 		using Ptr = gc_ptr<T>;
 		friend class gc_ptr<T>;
+		friend class enable_gc_pointer_from_this<T>;
 		
 		static gc_pool<T>& instance()
 		{
@@ -153,16 +155,12 @@ namespace gc
 		template<typename... ARGS>
 		Ptr makeOwned(const OwnerType* owner, ARGS... args)
 		{
-			Ptr p(owner, new T(std::forward<ARGS>(args)...));
-			add(p);
-			return p;
+			return Ptr { owner, new T(std::forward<ARGS>(args)...) };
 		}
 		
 		Ptr makeOwnedNull(OwnerType* owner)
 		{
-			Ptr p(owner, nullptr);
-			add(p);
-			return p;
+			return Ptr { owner, (T*)nullptr };
 		}
 		
 		template <typename Derived>
@@ -183,6 +181,25 @@ namespace gc
 			result += owned.size() ? "\n}" : "}";
 			
 			return result;
+		}
+
+	protected:
+		Ptr gcPointerFromRawPointer(T* rawPointer)
+		{
+			auto existingBacking = find_if(backings.begin(), backings.end(), [rawPointer] (gc_ptr_base::Backing* candidateBacking) {
+				return candidateBacking->to == rawPointer;
+			});
+			
+			if (existingBacking != backings.end())
+			{
+				Ptr p;
+				p.retain(*existingBacking);
+				return p;
+			}
+			else
+			{
+				return Ptr(nullptr, rawPointer);
+			}
 		}
 	};
 }

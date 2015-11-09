@@ -1,4 +1,5 @@
 #include "GarbageCollection.h"
+#include "GCPointerFromThis.h"
 #include "HangingObjectAssertingTest.h"
 #include "ObjectNetwork.h"
 #include "TestObjects.h"
@@ -276,4 +277,28 @@ TEST_F(GCPointerTest, ownersNeedNotBeGCObjects)
 		p->selfReference = p;
 	}
 	collectGarbage();
+}
+
+
+TEST_F(GCPointerTest, GCPointerFromThis)
+{
+	class C : public enable_gc_pointer_from_this<C>
+	{
+	public:
+		MOCK_METHOD0(destructor, void());
+		~C() { destructor(); }
+	};
+	
+	C* rawPointer = new C;
+	EXPECT_CALL(*rawPointer, destructor()).Times(1);
+	
+	{
+		gc_ptr<C> original(rawPointer);
+		
+		// gc_ptr<C> badCopy(rawPointer) would cause a double delete, but shared_from_this is safe
+		gc_ptr<C> goodCopy = original->gc_pointer_from_this();
+		ASSERT_THAT(goodCopy.get(), Eq(rawPointer));
+	}
+	
+	Mock::VerifyAndClearExpectations(rawPointer);	// Force verification, even if object never destroyed
 }

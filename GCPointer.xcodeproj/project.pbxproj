@@ -11,6 +11,7 @@
 		930114711BC8070100ED2D6F /* GCPointerCastingTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */; };
 		930114731BC808AC00ED2D6F /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
 		93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 930114721BC808AC00ED2D6F /* GarbageCollection.cpp */; };
+		93733F201BED149000D5765B /* AllocatorTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93733F1F1BED149000D5765B /* AllocatorTest.cpp */; };
 		93B72ECC1BC07E24001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72ECB1BC07E24001F5870 /* main.cpp */; };
 		93B72EF61BC08222001F5870 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 93B72EF51BC08222001F5870 /* main.cpp */; };
 		93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */ = {isa = PBXBuildFile; fileRef = 93B72F2A1BC08A9C001F5870 /* gmock-all.cc */; };
@@ -47,6 +48,8 @@
 		930114721BC808AC00ED2D6F /* GarbageCollection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GarbageCollection.cpp; path = src/GarbageCollection.cpp; sourceTree = "<group>"; };
 		93068DFA1BDE7F4700CAD319 /* GCPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPool.h; path = src/GCPool.h; sourceTree = "<group>"; };
 		93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GarbageCollection.h; path = src/GarbageCollection.h; sourceTree = "<group>"; };
+		93733F1F1BED149000D5765B /* AllocatorTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = AllocatorTest.cpp; sourceTree = "<group>"; };
+		93733F211BF1036900D5765B /* GCPointerFromThis.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GCPointerFromThis.h; path = src/GCPointerFromThis.h; sourceTree = "<group>"; };
 		9373F21A1BE6A3C000B02678 /* BoolLock.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BoolLock.h; path = src/BoolLock.h; sourceTree = "<group>"; };
 		93B72EC81BC07E24001F5870 /* GCPointer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GCPointer; sourceTree = BUILT_PRODUCTS_DIR; };
 		93B72ECB1BC07E24001F5870 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -127,6 +130,7 @@
 				93068DFB1BDE7FEC00CAD319 /* GarbageCollection.h */,
 				930114721BC808AC00ED2D6F /* GarbageCollection.cpp */,
 				9373F21A1BE6A3C000B02678 /* BoolLock.h */,
+				93733F211BF1036900D5765B /* GCPointerFromThis.h */,
 			);
 			path = GCPointer;
 			sourceTree = "<group>";
@@ -142,6 +146,7 @@
 				93BDBBD11BE0F554002F9CD9 /* MultimapTest.cpp */,
 				9301146E1BC8033E00ED2D6F /* SharedPtrTest.cpp */,
 				930114701BC8070100ED2D6F /* GCPointerCastingTest.cpp */,
+				93733F1F1BED149000D5765B /* AllocatorTest.cpp */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -279,6 +284,7 @@
 				93B72F441BC08D2A001F5870 /* gtest-all.cc in Sources */,
 				93068DFC1BDF9C2F00CAD319 /* GarbageCollection.cpp in Sources */,
 				93B72EF61BC08222001F5870 /* main.cpp in Sources */,
+				93733F201BED149000D5765B /* AllocatorTest.cpp in Sources */,
 				93BDBBD91BE14684002F9CD9 /* PerformanceTest.cpp in Sources */,
 				93B72F381BC08BCB001F5870 /* gmock-all.cc in Sources */,
 				93BDBBD31BE0F554002F9CD9 /* MultimapTest.cpp in Sources */,

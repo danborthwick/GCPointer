@@ -6,15 +6,21 @@
 class Base : public InstanceCounted
 {
 public:
-	virtual std::string className() { return "Base"; }
+	virtual const std::string className() const { return "Base"; }
 	virtual ~Base() {}
 };
 
 class Derived : public Base
 {
 public:
-	std::string className() override { return "Derived"; }
+	const std::string className() const override
+	{
+		static const std::string sClassName = "Derived";
+		return sClassName;
+	}
+	
 	virtual ~Derived() {}
+	int x = 42;
 };
 
 class NotDerivedFromBase {};
